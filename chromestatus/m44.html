@@ -1,0 +1,22 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>New Features by Chrome 44</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<h1>Samples for <a href="https://www.chromestatus.com/features#=44">Web Platform Features Enabled by Chrome 44</a></h1>
+<ol>
+  <li>Computed Property Names (ES6): <a href="https://googlechrome.github.io/samples/computed-properties-es6/index.html">https://googlechrome.github.io/samples/computed-properties-es6/index.html</a></li>
+  <li>Document.scrollingElement: <span id="SE"></span></li>
+  <li>Notification.data and ServiceWorkerRegistration.getNotifications(): <a href=""></a></li>
+  <li>WebAudio: ChannelMergerNode Static Routing: <span id="CMN"></span></li>
+</ol>
+
+<script>
+  var se = document.getElementById("SE");
+  if ("scrollingElement" in document) {
+    se.innerHTML = document.scrollingElement.toString();
+  } else {
+    se.innerHTML = "The user agent doesn't support scrollingElement attribute";
+  }
+</script>
+

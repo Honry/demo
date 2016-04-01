@@ -1,0 +1,47 @@
+{
+  "icons": [
+    {
+      "sizes": "128x128",
+      "src": "icon.png"
+    }
+  ],
+  "name": "ChromeDemo",
+  "start_url": "index.html",
+  "xwalk_version": "0.0.1",
+  "background_color": "#2196F3",
+  "theme_color": "#2196F3",
+  "short_name": "demo",
+  "display": "standalone",
+  "orientation": "any",
+  "xwalk_app_version": "0.1",
+  "xwalk_command_linedd": "",
+  "xwalk_package_id": "org.chrome.demo",
+  "xwalk_android_animatable_view": false,
+  "xwalk_android_keep_screen_on": false,
+  "xwalk_android_permissions": [
+    "ACCESS_FINE_LOCATION",
+    "ACCESS_NETWORK_STATE",
+    "ACCESS_WIFI_STATE",
+    "ACCESS_FINE_LOCATION",
+    "BILLING",
+    "CAMERA",
+    "CHANGE_WIFI_STATE",
+    "CHANGE_NETWORK_STATE",
+    "GEOLACTION",
+    "INTERNET",
+    "MODIFY_AUDIO_SETTINGS",
+    "NOTIFICATIONS",
+    "NFC",
+    "RECORD_AUDIO",
+    "READ_SMS",
+    "READ_PHONE_STATE",
+    "READ_CONTACTS",
+    "READ_EXTERNAL_STORAGE",
+    "RECEIVE_SMS",
+    "SEND_SMS",
+    "VIBRATE",
+    "WRITE_EXTERNAL_STORAGE",
+    "WRITE_CONTACTS",
+    "WRITE_SMS"
+  ]
+}
