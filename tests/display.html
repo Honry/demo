@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <title></title>
+    <script>
+      var txtMsg = document.getElementById("log");
+      var addConnection = function(connection) {
+        connection.onconnect = function () {
+          this.onmessage = function (message) {
+          txtMsg.textContent = message.data;
+        };
+      };
+     navigator.presentation.receiver.connectionList.then(function (list) {
+        list.connections.map(function (connection) {
+          addConnection(connection);
+        });
+        list.connections.onconnectionavailable = function (connections) {
+          addConnection(connections[connections.length - 1]);
+        };
+      });
+    </script>
+  </head>
+  <body bgcolor="green">
+    <h1>Presentation Window Showed on Wireless Display</h1>
+    <div>
+      <div id="log">receiver display init</div>
+    </div>
+  </body>
+</html>

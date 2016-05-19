@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2016 Intel Corporation.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+* Redistributions of works must retain the original copyright notice, this list
+  of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the original copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+* Neither the name of Intel Corporation nor the names of its contributors
+  may be used to endorse or promote products derived from this work without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY INTEL CORPORATION "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL INTEL CORPORATION BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<meta charset="utf-8">
+<title>Prensentation API: onconnect, onclose, onterminate</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="author" title="Chunyan Wang" href="mailto:chunyanx.wang@intel.com">
+<link rel="help" href="http://w3c.github.io/presentation-api/#idl-def-presentationconnection">
+<meta name="assert" content="Test checks that PresentationConnection api has implement onconnect, onclose and onterminate.">
+<style>
+
+</style>
+<body>
+  <h2>Preconditions</h2>
+  <ol class="instructions">
+    <li>
+      Open the page, the Status shows "Display availability: available, Session state: no session, Presentation ID: none"
+    </li>
+    <li>
+      Click the "START" button, the Status shows "Display availability: available, Session state: connected" and Presentation ID is not none
+    </li>
+    <li>
+      Click the "CLOSE" button, the Status shows "Display availability: available, Session state: closed, Presentation ID: none"
+    </li>
+    <li>
+      Click the "START" button agin, and then click the "TERMINATE" button, the Status shows
+      "Display availability: available, Session state: closed, Presentation ID: none"
+    </li>
+  </ol>
+  <p>Test passes if [description of pass condition].</p>
+  <div id="contentPannel">
+    <div class="row">
+      <div class="col-xs-6">
+        <h3>Presentation Session</h3>
+        <div class="thumbnail">
+          <div>
+            <button id="btnStart" type="button" class="btn btn-default button" onclick="onClickStart()">START</button>
+          </div>
+          <div style="margin-top: 5px">
+            <button id="btnClose" type="button" class="btn btn-default button" onclick="onClickClose()">CLOSE</button>
+          </div>
+          <div style="margin-top: 5px">
+            <button id="btnTerminate" type="button" class="btn btn-default button" onclick="onClickTerminate()">TERMINATE</button>
+          </div>
+      </div>
+      <div id="presentationStatus">
+        <h3>Status</h3>
+        <div class="thumbnail">
+          <h4>Display availability</h4>
+          <p id="availabilityStatus">unavailable</p>
+          <h4>Session state</h4>
+          <p id="sessionState">no session</p>
+          <h4>Presentation ID</h4>
+          <p id="presentationId">none</p>
+        </div>
+      </div>
+    </div>
+    <p id="log" style="color:red;"></p>
+  </div>
+  <script>
+    var data = "hello";
+    var connection = null;
+    var presUrl = "display.html";
+    var request;
+
+    var btnStart = document.getElementById("btnStart");
+    var btnClose = document.getElementById("btnClose");
+    var btnTerminate = document.getElementById("btnTerminate");
+    var availabilityStatus = document.getElementById("availabilityStatus");
+    var sessionState = document.getElementById("sessionState");
+    var txtPresid = document.getElementById("presentationId");
+    var txtMsg = document.getElementById("log");
+    
+    window.onload = function() {
+      init();
+      request = new PresentationRequest(presUrl);
+      request.getAvailability().then(function(availability) {
+        updateAvailabilityStatus(availability.value);
+        availability.onchange = function() {
+          updateAvailabilityStatus(this.value);
+        };
+      }, function(error) {
+        txtMsg.textContent = error.name;
+      });
+    };
+
+    function init() {
+      btnStart.disabled = true;
+      btnClose.disabled = true;
+      btnTerminate.disabled = true;
+      txtMsg.textContent = "";
+    }
+
+    function onClickStart() {
+      onClickClose();
+      request = new PresentationRequest(presUrl);
+      request.start().then(function(conn) {
+        onConnectionStart(conn);
+      }, function(error) {
+        txtMsg.textContent = "Session Start error: " + error.message;
+      });
+    }
+
+    function onClickClose() {
+      if(connection != null) {
+        connection.close();
+      }
+    }
+
+    function onClickTerminate() {
+      if(connection != null) {
+        connection.terminate();
+      }
+    }
+
+    function onConnectionStart(conn) {
+      txtMsg.textContent = "";
+      connection = conn;
+      localStorage.setItem("presId", connection.id);
+      updateStatus();
+      connection.onconnect = function() {
+        btnClose.disabled = false;
+        btnTerminate.disabled = false;
+        btnJoin.disabled = true;
+        updateStatus();
+        connection.onmessage = function(evt) {
+        }
+        connection.send(data);
+      }
+      connection.onclose = function() {
+        updateStatus();
+        reset();
+      };
+      connection.onterminate = function () {
+        localStorage.removeItem("presId");
+        updateStatus();
+        reset();
+      };
+    }
+
+    function reset() {
+      connection = null;
+      btnClose.disabled = true;
+      btnTerminate.disabled = true;
+    };
+
+    function updateStatus() {
+      var isConnected = connection != null &&
+                          connection.state == "connected";
+      btnClose.disabled = !isConnected;
+      btnTerminate.disabled = !isConnected;
+      if(connection) {
+        sessionState.textContent = connection.state;
+        txtPresid.textContent = connection.id;
+      }
+      if(!isConnected) {
+        txtPresid.textContent = "none";
+      }
+    }
+
+    function updateAvailabilityStatus (value) {
+      btnStart.disabled = !value;
+      availabilityStatus.textContent = value ? "available" : "unavailable";
+    }
+
+    window.onbeforeunload = onClickTerminate;
+  </script>
+</body>
