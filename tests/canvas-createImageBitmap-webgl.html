@@ -1,6 +1,6 @@
 <html>
 <head>
-<script src="../../resources/js-test.js"></script>
+<script src="resources/js-test.js"></script>
 </head>
 <body onload="start();">
 <canvas id="webgl" width="200" height="200"></canvas>
@@ -12,6 +12,7 @@
  * 1 frame after WebGL draws contents.
  */
     window.jsTestIsAsync = true;
+
     var canvas = document.createElement("canvas");
     canvas.width = 200;
     canvas.height = 200;
@@ -23,6 +24,7 @@
         shouldBeTrue("d[2] == 0");
         shouldBeTrue("d[3] == 255");
     }
+
     function shouldBeTransparent(x, y) {
         d = ctx.getImageData(x, y, 1, 1).data;
         shouldBeTrue("d[0] == 0");
@@ -30,6 +32,7 @@
         shouldBeTrue("d[2] == 0");
         shouldBeTrue("d[3] == 0");
     }
+
     function start() {
         debug("Check the imageBitmap of webgl.")
         var webgl_canvas = document.getElementById("webgl");
@@ -44,6 +47,7 @@
             }
         });
     }
+
     function createImageBitmapAndCheck(webgl_canvas, discarded) {
         return createImageBitmap(webgl_canvas).then(function (imageBitmap) {
             ctx.clearRect(0, 0, 200, 200);
@@ -60,6 +64,7 @@
             finishJSTest();
         });
     }
+
     function asyncTest() {
         debug("Check the imageBitmap of webgl in the next frame. drawingBuffer is discarded.")
         var webgl_canvas = document.getElementById("webgl");
