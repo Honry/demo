@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2015 Intel Corporation.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+* Redistributions of works must retain the original copyright notice, this list
+  of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the original copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+* Neither the name of Intel Corporation nor the names of its contributors
+  may be used to endorse or promote products derived from this work without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY INTEL CORPORATION "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL INTEL CORPORATION BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<meta charset="utf-8">
+<title>PresentationConnection.onconnect for Controlling User Agent</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="author" title="He Yue" href="mailto:yue.he@intel.com">
+<link rel="help" href="http://w3c.github.io/presentation-api/#interface-presentationconnection">
+<div id="log"></div>
+<div class="content">
+  <h2>Test Steps:</h2>
+  <ol>
+    <li>Click the "start" button</li>
+    <li>Click the "close" button</li>
+  </ol>
+  <h2>Expected Result:</h2>
+  <ol>
+    <li>Info "Start success" was displayed, "Onconnect: the connection state is connected" was displayed</li>
+    <li>Info "Close success" was displayed</li>
+  </ol>
+  <div align="middle">
+    <input type='button' value='start' onclick="onclickStart()" />
+  </div>
+  <div align="middle">
+    <input type='button' value='close' onclick="onclickClose()" />
+  </div>
+  <div id="result" style="width:100%; height:100px; word-wrap: break-word; word-break: normal;"></div>
+</div>
+
+<script type='text/javascript'>
+  var connection = null;
+  var url = "display/presentation.html";
+  function onclickStart() {
+    var request = new PresentationRequest(url);
+    request.start().then(function(conn) {
+      onConnectionStart(conn);
+      document.getElementById("result").innerHTML = "Start success!" + "<br/>"; 
+      }).catch(function(e) {
+        document.getElementById("result").innerHTML = "Start failed! error: " + e.name + "<br/>";
+    });
+  } 
+  function onclickClose() {
+    if(connection != null) {
+      connection.close();
+      document.getElementById("result").innerHTML += "Close success! " + "<br/>";
+    } else {
+    document.getElementById("result").innerHTML += "The connection is null." + "<br/>";
+    }
+  }
+  function onConnectionStart(conn) {
+    connection = conn;
+    connection.onconnect = function() {
+       document.getElementById("result").innerHTML += "Onconnect: the connect state is " + connection.state + "<br/>";
+    };
+  }
+
+</script>
+<div class="footer">
+  <div id="footer"></div>
+</div>
+
