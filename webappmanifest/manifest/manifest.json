@@ -1,0 +1,6 @@
+{
+"name": "Manifest Foo Sample",
+"xwalk_package_id" : "com.example.foo",
+"short_name": "foo",
+"icons" : [{"src": "icon/icon.png","sizes": "128x128"}],
+}
