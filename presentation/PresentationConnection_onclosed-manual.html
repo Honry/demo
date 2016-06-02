@@ -19,28 +19,22 @@
 
 <script>
   setup({explicit_timeout: true});
-  var startBtn = document.getElementById("presentStartBtn");
   var startPresentation = function () {
     async_test(function(t) {
-      var url = "display/presentation.html";
+      var url = "support/presentation.html";
       var request = new PresentationRequest(url);
       request.start()
         .then(function(connection) {
-          assert_true(connection instanceof PresentationConnection);
+          assert_true(connection instanceof PresentationConnection, 'the connection is setup');
           connection.onclose = t.step_func_done(function(evt) {
-            test(function() {
-              assert_equals(evt.type, "close");
-              assert_equals(connection.state, "closed");
-            }, 'the onclose is fired and the connection state is closed');
+            assert_equals(evt.type, "close");
+            assert_equals(connection.state, "closed");
           });
           connection.close();
-          test(function() {
-            assert_equals(connection.state, "closed");
-          }, 'the connection state is closed after close');
       })
       .catch(function(ex) {
         assert_unreached(ex.name + ":" + ex.message);
       });
-    }, "the Connection starts successfully.");
+    }, "the onclose is fired and the connection state is closed.");
   }
 </script>
