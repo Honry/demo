@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>User agents must also provide an event handler IDL attribute [HTML5] named ondeviceorientationabsolute on the window object</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="author" title="Yunx Liu" href="mailto:yunx.liu@intel.com">
+<link rel="help" href="http://w3c.github.io/deviceorientation/spec-source-orientation.html#deviceorientationabsolute">
+<script src="./resources/testharness.js"></script>
+<script src="./resources/testharnessreport.js"></script>
+<p>Rotate the device to run the tests.</p>
+<div id="log"></div>
+<script>
+var t1 = async_test("Provide an event handler IDL attribute [HTML5] named ondeviceorientationabsolute");
+var t2 = async_test("The type of this event handler must be 'DeviceOrientationEvent'");
+var run = false;
+window.ondeviceorientationabsolute = function(e) {
+  if (!run) {
+    run = true;
+    t1.step(function() {
+      assert_equals(e.type, "deviceorientationabsolute");
+    });
+    t1.done();
+    t2.step(function() {
+      assert_true(e.constructor.toString().lastIndexOf("DeviceOrientationEvent") != -1);
+    });
+    t2.done();
+  }
+};
+</script>

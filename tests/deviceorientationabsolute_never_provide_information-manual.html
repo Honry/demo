@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Implementation can never provide absolute orientation information, the event should be fired with all properties set to null</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="author" title="Yunx Liu" href="mailto:yunx.liu@intel.com">
+<link rel="help" href="http://w3c.github.io/deviceorientation/spec-source-orientation.html#deviceorientationabsolute">
+<script src="./resources/testharness.js"></script>
+<script src="./resources/testharnessreport.js"></script>
+<p>Precondition: implementation can ever provide absolute orientation information</p>
+<p>Rotate the device to run the test.</p>
+<div id="log"></div>
+<script>
+run = false;
+async_test(function(t) {
+  window.addEventListener("deviceorientationabsolute", t.step_func(function(e) {
+    if(!run) {
+      run = true;
+      assert_equals(e.alpha, null, "alpha is set to null");
+      assert_equals(e.beta, null, "beta is set to null");
+      assert_equals(e.gamma, null, "gamma is set to null");
+      assert_equals(e.absolute, null, "absolute is set to null");
+      t.done();
+    }
+  }), false);
+}, document.title);
+</script>

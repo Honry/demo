@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Detecting user agents supports the new deviceorientationabsolute event</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="author" title="Yunx Liu" href="mailto:yunx.liu@intel.com">
+<link rel="help" href="http://w3c.github.io/deviceorientation/spec-source-orientation.html#deviceorientationabsolute">
+<script src="./resources/testharness.js"></script>
+<script src="./resources/testharnessreport.js"></script>
+<p>Rotate the device to run the test.</p>
+<div id="log"></div>
+<script>
+async_test(function(t) {
+  if("ondeviceorientationabsolute" in window) {
+    window.ondeviceorientationabsolute = t.step_func(function(e) {
+      t.done();
+    });
+  } else if ("ondeviceorientation" in window) {
+    window.addEventListener("deviceorientation", t.step_func(function(e) {
+      assert_false(e.absolute, "The deviceorientation event provides relative values");
+      t.done();
+    }), false);
+  }
+}, document.title);
+</script>

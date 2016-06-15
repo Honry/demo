@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>The deviceorientationabsolute event must follow the usual behavior of DOM4 Events</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="author" title="Yunx Liu" href="mailto:yunx.liu@intel.com">
+<link rel="help" href="http://w3c.github.io/deviceorientation/spec-source-orientation.html#deviceorientationabsolute">
+<script src="./resources/testharness.js"></script>
+<script src="./resources/testharnessreport.js"></script>
+<p>Rotate the device to run the tests.</p>
+<div id="log"></div>
+<script>
+async_test(function(t){
+  window.addEventListener("deviceorientationabsolute", function(e) {
+    t.step(function() {
+      assert_equals(e.target, window);
+      assert_false(e.bubbles);
+      assert_false(e.cancelable);
+    });
+    t.done();
+  }, false);
+  var eventInit = { bubbles: false, cancelable: false };
+  var event = new Event("deviceorientationabsolute", eventInit);
+  window.dispatchEvent(event);
+}, document.title);
+</script>

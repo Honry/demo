@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Orientation Test: Rotate the device frame around its x axis</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="author" title="Yunx Liu" href="mailto:yunx.liu@intel.com">
+<link rel="help" href="http://w3c.github.io/deviceorientation/spec-source-orientation.html#deviceorientationabsolute">
+<script src="./resources/testharness.js"></script>
+<script src="./resources/testharnessreport.js"></script>
+<p>Rotate the device frame around its x axis.</p>
+<div id="log"></div>
+<script>
+var run = false;
+async_test(function(t) {
+  window.addEventListener("deviceorientationabsolute", t.step_func(function(e) {
+    if(!run) {
+      run = true;
+      assert_greater_than(e.beta, -180);
+      assert_less_than(e.beta, 180);
+      t.done();
+    }
+  }), false);
+}, document.title);
+</script>
