@@ -70,7 +70,7 @@ an installable web application for Android platforms following these steps:
    files are `org.chrome.demo-0.1-debug.armabi-v7a.apk` and
    `org.chrome.demo-0.1-debug.x86.apk`.
 
-## Demos on Winodws
+## Demos on Windows
 
 Build an installable web application for Windows platforms following these steps:
 
