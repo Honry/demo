@@ -33,9 +33,7 @@ Authors:
 <script src="./resources/testharnessreport.js"></script>
 <div id="log"></div>
 <script>
-  var sampleRate = 44100;
-  var duration = 1;
-  var offlineAudioContext = new OfflineAudioContext(1, sampleRate * duration, sampleRate);
+  var offlineAudioContext = new OfflineAudioContext(1, 256, 44100);
 
   test(function () {
     assert_true("length" in offlineAudioContext, "Check if OfflineAudioContext.length attribute exists");
