@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!--
+Test converted from blink:
+https://github.com/crosswalk-project/blink-crosswalk/blob/master/LayoutTests/fast/mediastream/RTCPeerConnection-createOffer.html
+-->
+
+<meta charset=utf-8>
+<title>WebRTC Test: RTCPeerConnection</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel=help href="http://w3c.github.io/webrtc-pc/">
+<script src=./resources/testharness.js></script>
+<script src=./resources/testharnessreport.js></script>
+<div id=log></div>
+<script>
+  var pc1;
+  var pc2;
+  if (typeof RTCPeerConnection != "undefined") {
+    pc1 = new RTCPeerConnection(null, null);
+    pc2 = new RTCPeerConnection(null, null);
+  } else {
+    pc1 = new webkitRTCPeerConnection(null, null);
+    pc2 = new webkitRTCPeerConnection(null, null);
+  }
+
+  function startcreateOfferback(){
+    return pc1.createOffer();
+  }
+
+  test(function () {
+    startcreateOfferback().then(function() {
+      assert_true(true, "The createOffer() Promise fulfilled");
+    });
+  }, "Check if the createOffer() Promise fulfilled");
+
+  test(function () {
+    startcreateOfferback().then(function(offer) {
+      return pc1.setLocalDescription(offer);
+    }).then(function () {
+      assert_true(true, "The setLocalDescription() Promise fulfilled");
+    });
+  }, "Check if the setLocalDescription() Promise fulfilled");
+
+  test(function () {
+    var pc1_offer;
+    startcreateOfferback().then(function(offer) {
+      pc1_offer = offer;
+      return pc1.setLocalDescription(offer);
+    }).then(function () {
+      return pc2.setRemoteDescription(pc1_offer);
+    }).then(function () {
+      assert_true(true, "The setRemoteDescription() Promise fulfilled");
+    });
+  }, "Check if the setRemoteDescription() Promise fulfilled");
+
+  test(function () {
+    var pc1_offer;
+    startcreateOfferback().then(function(offer) {
+      pc1_offer = offer;
+      return pc1.setLocalDescription(offer);
+    }).then(function () {
+      return pc2.setRemoteDescription(pc1_offer);
+    }).then(function () {
+      return pc2.createAnswer(pc1_offer);
+    }).then(function () {
+      assert_true(true, "The createAnswer() Promise fulfilled");
+    });
+  }, "Check if the createAnswer() Promise fulfilled");
+
+  var iceCandidate = new RTCIceCandidate({candidate:"nano nano"});
+
+  function startaddIceCandidateback(){
+    return pc1.addIceCandidate(iceCandidate);
+  }
+
+  test(function () {
+    startaddIceCandidateback().then(function() {
+      assert_true(true, "The addIceCandidate() Promise fulfilled");
+    });
+  }, "Check if the addIceCandidate() Promise fulfilled");
+
+</script>
+
