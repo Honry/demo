@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>CSS3 Fonts Test: CSS3DF_font-variant_caps</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="author" title="Xiuqix Jiang" href="mailto:xiuqix.jiang@intel.com">
+<link rel="help" href="https://www.w3.org/TR/2012/WD-css3-fonts-20120823/#font-variant-caps-prop">
+<style style="test/css">
+.smallC {
+  font-variant-caps: small-caps;
+  font-style: italic;
+}
+.normal{
+  font-variant-caps: normal;
+  font-style: italic;
+}
+</style>
+<p>Test passes if the first testing line forces the use of small capitals letters for lower case characters.</p>
+<p class="smallC" >The first testing line.</p>
+<p class="normal" >The second testing line.</p>
+
