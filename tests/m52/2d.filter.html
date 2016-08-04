@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Canvas Test: CSS3Colors_color_rgba</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="author" title="Xiuqix Jiang" href="mailto:xiuqix.jiang@intel.com">
+<link rel="help" href="https://html.spec.whatwg.org/multipage/scripting.html#filters">
+<p>Test passes if the two "Hello world" are different.</p>
+<canvas id="canvas"></canvas>
+<br>
+<canvas id="ref"></canvas>
+<script>
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+ctx.filter = "blur(5px)";
+ctx.font = "48px serif";
+ctx.strokeText("Hello world", 50, 100);
+
+var canvas = document.getElementById("ref");
+var ctx = canvas.getContext("2d");
+
+ctx.font = "48px serif";
+ctx.strokeText("Hello world", 50, 100);
+</script>
