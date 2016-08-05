@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>CSS3 UserInterface Test: CSS3UI_appearance-none-manual</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="author" title="Xiuqix Jiang" href="mailto:xiuqix.jiang@intel.com">
+<link rel="help" href="https://drafts.csswg.org/css-ui-4/#appearance-switching">
+<style style="test/css">
+.deal meter { -webkit-appearance: none; }
+</style>
+<p>Test passes if the two lines are different.</p>
+<p>The first line:
+  <meter low="60" high="80" max="100" optimum="100" value="90">A</meter>
+  <meter low="60" high="80" max="100" optimum="100" value="70">B</meter>
+  <meter low="60" high="80" max="100" optimum="100" value="50">C</meter>
+</p>
+<p class="deal">The second line:
+  <meter low="60" high="80" max="100" optimum="100" value="90">A</meter>
+  <meter low="60" high="80" max="100" optimum="100" value="70">B</meter>
+  <meter low="60" high="80" max="100" optimum="100" value="50">C</meter>
+</p>
+
