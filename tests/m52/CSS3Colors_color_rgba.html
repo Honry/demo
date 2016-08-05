@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>CSS3 Colors Test: CSS3Colors_color_rgba</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="author" title="Xiuqix Jiang" href="mailto:xiuqix.jiang@intel.com">
+<link rel="help" href="https://drafts.csswg.org/css-ui-4/#appearance-switching">
+<style style="test/css">
+.bottom {
+  background: red; 
+  width: 200px; 
+  height: 200px;
+  margin: 2%;
+}
+.overlay2 {
+  background: #ffff0077;
+  width: 92%;
+  height: 92%;
+  margin: 4%;
+  transform: translateY(4%);
+}
+</style>
+<p>Test passes if there is another color square in a red one.</p>
+<div class="bottom">
+  <div class="overlay2" id="demo"></div>
+</div>
+
