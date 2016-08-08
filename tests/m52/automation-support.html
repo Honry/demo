@@ -1,0 +1,75 @@
+<!doctype html>
+<meta charset=utf-8>
+<title></title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="author" title="Chenglei Ren" href="mailto:chenglei.ren@intel.com">
+<link rel="help" href="https://webaudio.github.io/web-audio-api">
+<script src=../resources/testharness.js></script>
+<script src=../resources/testharnessreport.js></script>
+<script>
+    test(function () {
+        var context = new AudioContext();
+        var pannerNode = context.createPanner();
+        assert_true("positionX" in pannerNode, "Check if PannerNode.positionX attribute exists");
+        assert_equals(typeof pannerNode.positionX, "object", "Check if PannerNode.positionX attribute is AudioParam type");
+        assert_equals(pannerNode.positionX.defaultValue, 0, "Check if PannerNode.positionX default value is 0");
+        assert_true("positionY" in pannerNode, "Check if PannerNode.positionY attribute exists");
+        assert_equals(typeof pannerNode.positionY, "object", "Check if PannerNode.positionY attribute is AudioParam type");
+        assert_equals(pannerNode.positionY.defaultValue, 0, "Check if PannerNode.positionY default value is 0");
+        assert_true("positionZ" in pannerNode, "Check if PannerNode.positionZ attribute exists");
+        assert_equals(typeof pannerNode.positionZ, "object", "Check if PannerNode.positionZ attribute is AudioParam type");
+        assert_equals(pannerNode.positionZ.defaultValue, 0, "Check if PannerNode.positionZ default value is 0");
+    }, "Check if PannerNode.position attribute is supported");
+    test(function () {
+        var context = new AudioContext();
+        var pannerNode = context.createPanner();
+        assert_true("orientationX" in pannerNode, "Check if PannerNode.orientationX attribute exists");
+        assert_equals(typeof pannerNode.orientationX, "object", "Check if PannerNode.orientationX attribute is AudioParam type");
+        assert_equals(pannerNode.orientationX.defaultValue, 1, "Check if PannerNode.orientationX default value is 0");
+        assert_true("orientationY" in pannerNode, "Check if PannerNode.orientationY attribute exists");
+        assert_equals(typeof pannerNode.orientationY, "object", "Check if PannerNode.orientationY attribute is AudioParam type");
+        assert_equals(pannerNode.orientationY.defaultValue, 0, "Check if PannerNode.orientationY default value is 0");
+        assert_true("orientationZ" in pannerNode, "Check if PannerNode.orientationZ attribute exists");
+        assert_equals(typeof pannerNode.orientationZ, "object", "Check if PannerNode.orientationZ attribute is AudioParam type");
+        assert_equals(pannerNode.orientationZ.defaultValue, 0, "Check if PannerNode.orientationZ default value is 0");
+    }, "Check if PannerNode.orientation attribute is supported");
+    test(function () {
+        var context = new AudioContext();
+        var listener = context.listener;
+        assert_true("positionX" in listener, "Check if listener.positionX attribute exists");
+        assert_equals(typeof listener.positionX, "object", "Check if listener.positionX attribute is AudioParam type");
+        assert_equals(listener.positionX.defaultValue, 0, "Check if listener.positionX default value is 0");
+        assert_true("positionY" in listener, "Check if listener.positionY attribute exists");
+        assert_equals(typeof listener.positionY, "object", "Check if listener.positionY attribute is AudioParam type");
+        assert_equals(listener.positionY.defaultValue, 0, "Check if listener.positionY default value is 0");
+        assert_true("positionZ" in listener, "Check if listener.positionZ attribute exists");
+        assert_equals(typeof listener.positionZ, "object", "Check if listener.positionZ attribute is AudioParam type");
+        assert_equals(listener.positionZ.defaultValue, 0, "Check if listener.positionZ default value is 0");
+    }, "Check if listener.position attribute is supported");
+    test(function () {
+        var context = new AudioContext();
+        var listener = context.listener;
+        assert_true("forwardX" in listener, "Check if listener.forwardX attribute exists");
+        assert_equals(typeof listener.forwardX, "object", "Check if listener.forwardX attribute is AudioParam type");
+        assert_equals(listener.forwardX.defaultValue, 0, "Check if listener.forwardX default value is 0");
+        assert_true("forwardY" in listener, "Check if listener.forwardY attribute exists");
+        assert_equals(typeof listener.forwardY, "object", "Check if listener.forwardY attribute is AudioParam type");
+        assert_equals(listener.forwardY.defaultValue, 0, "Check if listener.forwardY default value is 0");
+        assert_true("forwardZ" in listener, "Check if listener.forwardZ attribute exists");
+        assert_equals(typeof listener.forwardZ, "object", "Check if listener.forwardZ attribute is AudioParam type");
+        assert_equals(listener.forwardZ.defaultValue, -1, "Check if listener.forwardZ default value is 0");
+    }, "Check if listener.forward attribute is supported");
+    test(function () {
+        var context = new AudioContext();
+        var listener = context.listener;
+        assert_true("upX" in listener, "Check if listener.upX attribute exists");
+        assert_equals(typeof listener.upX, "object", "Check if listener.upX attribute is AudioParam type");
+        assert_equals(listener.upX.defaultValue, 0, "Check if listener.upX default value is 0");
+        assert_true("upY" in listener, "Check if listener.upY attribute exists");
+        assert_equals(typeof listener.upY, "object", "Check if listener.upY attribute is AudioParam type");
+        assert_equals(listener.upY.defaultValue, 1, "Check if listener.upY default value is 0");
+        assert_true("upZ" in listener, "Check if listener.upZ attribute exists");
+        assert_equals(typeof listener.upZ, "object", "Check if listener.upZ attribute is AudioParam type");
+        assert_equals(listener.upZ.defaultValue, 0, "Check if listener.upZ default value is 0");
+    }, "Check if listener.up attribute is supported");
+</script>
