@@ -1,0 +1,17 @@
+<!doctype html>
+<meta charset=utf-8>
+<title></title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="author" title="Chenglei Ren" href="mailto:chenglei.ren@intel.com">
+<link rel="help" href="https://webaudio.github.io/web-audio-api">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<script>
+    test(function () {
+        var context = new AudioContext();
+        var dynamicscompressornode = context.createDynamicsCompressor();
+        assert_true("reduction" in dynamicscompressornode, "Check if DynamicsCompressorNode.reduction attribute exists");
+        assert_true(typeof dynamicscompressornode.reduction == "number", "Check if DynamicsCompressorNode.reduction attribute is float type");
+        assert_equals(dynamicscompressornode.reduction, 0, "Check if DynamicsCompressorNode.reduction default value is 0");
+    }, "Check if dynamicscompressornode.reduction is supported");
+</script> 
