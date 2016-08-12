@@ -1,0 +1,42 @@
+<!doctype html>
+<meta charset=utf-8>
+<title>MediaStreamTrack</title>
+<script src=../resources/testharness.js></script>
+<script src=../resources/testharnessreport.js></script>
+<div id="log"></div>
+<script src="./support/js/vendor-prefix.js"
+        data-prefixed-objects='[{"ancestors":["navigator"], "name":"getUserMedia"}]'></script>
+<script>
+
+async_test(function(t) {
+  navigator.getUserMedia({
+    video: true,
+    audio: true
+  }, t.step_func(function(stream) {
+    var audioTrack = stream.getAudioTracks()[0];
+    var videoTrack = stream.getVideoTracks()[0];
+    assert_equals(typeof(audioTrack.getConstraints), "function", "MediaStreamTrack.getConstraints is a function.");
+    assert_equals(typeof(videoTrack.getConstraints), "function", "MediaStreamTrack.getConstraints is a function.");
+    t.done();
+  }), t.step_func(function(error) {
+    t.unreached_func("Access to audio and video stream get error: " + error.message);
+  }));
+}, "Check that if the type of MediaStreamTrack.getConstraints is a function");
+
+async_test(function(t) {
+  navigator.getUserMedia({
+    video: true,
+    audio: true
+  }, t.step_func(function(stream) {
+    var audioTrack = stream.getAudioTracks()[0];
+    var videoTrack = stream.getVideoTracks()[0];
+    assert_equals(typeof(audioTrack.getSettings), "function", "MediaStreamTrack.getSettings is a function.");
+    assert_equals(typeof(videoTrack.getSettings), "function", "MediaStreamTrack.getSettings is a function.");
+    t.done();
+  }), t.step_func(function(error) {
+    t.unreached_func("Access to audio and video stream get error: " + error.message);
+  }));
+}, "Check that if the type of MediaStreamTrack.getSettings is a function");
+
+</script>
+
