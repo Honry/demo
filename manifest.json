@@ -14,7 +14,7 @@
   "display": "standalone",
   "orientation": "any",
   "xwalk_app_version": "0.1",
-  "xwalk_command_linedd": "",
+  "xwalk_command_line": "--unsafely-treat-insecure-origin-as-secure='http://demo.webrtcbook.com:5001/data.html' --user-data-dir=/test/only/profile/dir",
   "xwalk_package_id": "org.chrome.demo",
   "xwalk_android_animatable_view": false,
   "xwalk_android_keep_screen_on": false,
