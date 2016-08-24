@@ -96,9 +96,9 @@ dictionary AmbientLightSensorReadingInit {
   idl_array.add_idls(document.getElementById('ambient-light-idl').textContent);
 
   idl_array.add_objects({
-    AmbientLightSensor: ['new AmbientLightSensor();'],
-    AmbientLightSensorReading: ['new AmbientLightSensorReading({ illuminance: 750 });'],
-    SensorReadingEvent: ['new SensorReadingEvent("ambient-light", { reading: new AmbientLightSensorReading({ illuminance: 750 }) });']
+    AmbientLightSensor: ['new AmbientLightSensor();']
+    //AmbientLightSensorReading: ['new AmbientLightSensorReading({ illuminance: 750 });'],
+    //SensorReadingEvent: ['new SensorReadingEvent("ambient-light", { reading: new AmbientLightSensorReading({ illuminance: 750 }) });']
   });
 
   idl_array.test();
