@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>AmbientLightSensor Test: Basic functionality test</title>
+<link rel="author" title="Wanming Lin" href="https://github.com/Honry">
+<!--<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script> -->
+<div id="log"></div>
+<script>
+let sensor = new AmbientLightSensor();
+sensor.start();
+
+sensor.onchange = function(event) {
+  console.log(event.reading.illuminance);
+};
+
+sensor.onerror = function(event) {
+  console.log(event.error.name, event.error.message);
+};
+</script>
