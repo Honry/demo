@@ -10,7 +10,9 @@ let sensor = new AmbientLightSensor();
 sensor.start();
 
 sensor.onchange = function(event) {
-  console.log(event.reading.illuminance);
+  console.log("sensor state: " + event.state);
+  console.log("illuminance: " + event.reading.illuminance);
+  console.log("timeStamp: " + event.reading.timeStamp);
 };
 
 sensor.onerror = function(event) {
