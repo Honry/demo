@@ -6,16 +6,21 @@
 <script src="../resources/testharnessreport.js"></script> -->
 <div id="log"></div>
 <script>
-let sensor = new AmbientLightSensor();
-sensor.start();
 
-sensor.onchange = function(event) {
-  console.log("sensor state: " + event.state);
-  console.log("illuminance: " + event.reading.illuminance);
-  console.log("timeStamp: " + event.reading.timeStamp);
-};
+try {
+  let sensor = new AmbientLightSensor();
+  sensor.start();
 
-sensor.onerror = function(event) {
-  console.log(event.error.name, event.error.message);
-};
+  sensor.onchange = function(event) {
+    console.log("sensor state: " + event.state);
+    console.log("illuminance: " + event.reading.illuminance);
+    console.log("timeStamp: " + event.reading.timeStamp);
+  };
+
+  sensor.onerror = function(event) {
+    console.log(event.error.name, event.error.message);
+  };
+} catch(error) {
+  console.log(error.name, error.message);
+}
 </script>
