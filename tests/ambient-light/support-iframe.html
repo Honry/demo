@@ -1,0 +1,12 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<input type="text" name="iframe" id="iframe" value="null" />
+<script>
+
+let sensor = new AmbientLightSensor();
+
+sensor.start();
+document.getElementById("iframe").value = String(sensor.reading);
+sensor.stop();
+
+</script>
