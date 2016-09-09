@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>AmbientLightSensor Test: start</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="author" title="Xiuqi Jiang" href="mailto:xiuqix.jiang@intel.com">
+<link rel="help" href="https://www.w3.org/TR/ambient-light/">
+<link rel="help" href="https://w3c.github.io/sensors/releases/WD-generic-sensor-20160830.html#dom-sensor-start">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<div id="log"></div>
+<script>
+
+var start_result;
+let sensor = new AmbientLightSensor();
+
+start_result = sensor.start();
+
+test(function() {
+  assert_equals(sensor.state, "activating");
+}, "the sensor.state is activating after fire start event");
+
+test(function() {
+  assert_equals(String(sensor.reading), "[object AmbientLightSensorReading]");
+}, "the sensor.reading is AmbientLightSensorReading after fire start event");
+
+test(function() {
+  try{
+    sensor.start();
+  } catch (e){
+    assert_equals(e.name, "InvalidStateError");
+  }
+}, "throw an InvalidStateError exception when state is neither idle nor errored");
+
+//TODO: The permission is not ready.
+
+test(function() {
+  assert_equals(typeof start_result, "undefined");
+}, "the sensor.start return undefined");
+
+sensor.stop();
+
+</script>
