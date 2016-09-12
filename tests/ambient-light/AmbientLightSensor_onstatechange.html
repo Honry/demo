@@ -7,9 +7,9 @@
 <script src="../resources/testharnessreport.js"></script>
 <div id="log"></div>
 <script>
-setup(function() {
+
   var sensor = new AmbientLightSensor();
-});
+
 
 test(function() {
   assert_equals(sensor.state, "idle");
