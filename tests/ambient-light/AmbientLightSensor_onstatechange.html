@@ -2,17 +2,16 @@
 <meta charset="utf-8">
 <title>AmbientLightSensor Test: onstatechange</title>
 <link rel="author" title="Intel" href="http://www.intel.com">
-<link rel="author" title="Xiuqi Jiang" href="mailto:xiuqix.jiang@intel.com">
 <link rel="help" href="https://www.w3.org/TR/ambient-light/">
-<link rel="help" href="https://w3c.github.io/sensors/releases/WD-generic-sensor-20160830.html#sensor-onstatechange">
-<script src="../resources/testharness.js"></script>
-<script src="../resources/testharnessreport.js"></script>
+<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
 <div id="log"></div>
 <script>
 
 var state = "idle";
 var operation;
 let sensor = new AmbientLightSensor();
+
 test(function() {
   assert_equals(sensor.state, "idle");
 }, "The default sensor.state is idle.");

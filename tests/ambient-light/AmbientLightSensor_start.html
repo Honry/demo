@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>AmbientLightSensor Test: start()</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://www.w3.org/TR/ambient-light/">
+<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
+<div id="log"></div>
+<script>
+
+let sensor = new AmbientLightSensor();
+var start_return = sensor.start();
+
+test(function() {
+  assert_equals(sensor.state, "activating");
+}, "the sensor.state is activating after executing start() method");
+
+test(function() {
+  assert_equals(String(sensor.reading), "[object AmbientLightSensorReading]");
+}, "the sensor.reading is AmbientLightSensorReading after executing start() method");
+
+test(function() {
+  try {
+    sensor.start();
+  } catch(e) {
+    assert_equals(e.name, "InvalidStateError");
+  }
+}, "throw an InvalidStateError exception when state is neither idle nor errored");
+
+//TODO: The permission is not ready.
+
+sensor.stop();
+
+test(function() {
+  assert_equals(typeof start_return, "undefined");
+}, "the sensor.start() return undefined");
+
+</script>
