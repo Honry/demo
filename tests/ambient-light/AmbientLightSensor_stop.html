@@ -8,10 +8,11 @@
 <div id="log"></div>
 <script>
 
+var sensor, stop_return;
 setup(function() {
-  let sensor = new AmbientLightSensor();
+  sensor = new AmbientLightSensor();
   sensor.start();
-  var stop_return = sensor.stop();
+  stop_return = sensor.stop();
 });
 
 test(function() {

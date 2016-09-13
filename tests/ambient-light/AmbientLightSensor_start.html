@@ -7,9 +7,11 @@
 <script src="../resources/testharnessreport.js"></script>
 <div id="log"></div>
 <script>
+var sensor, start_return;
+
 setup(function() {
-  let sensor = new AmbientLightSensor();
-  var start_return = sensor.start();
+  sensor = new AmbientLightSensor();
+  start_return = sensor.start();
 });
 
 test(function() {
