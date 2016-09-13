@@ -3,14 +3,16 @@
 <title>AmbientLightSensor Test: stop()</title>
 <link rel="author" title="Intel" href="http://www.intel.com">
 <link rel="help" href="https://www.w3.org/TR/ambient-light/">
-<script src="/resources/testharness.js"></script>
-<script src="/resources/testharnessreport.js"></script>
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
 <div id="log"></div>
 <script>
 
-let sensor = new AmbientLightSensor();
-sensor.start();
-var stop_return = sensor.stop();
+setup(function() {
+  let sensor = new AmbientLightSensor();
+  sensor.start();
+  var stop_return = sensor.stop();
+});
 
 test(function() {
   assert_equals(sensor.state, "idle");
@@ -21,11 +23,7 @@ test(function() {
 }, "the sensor.reading is null after executing stop() method");
 
 test(function() {
-  try {
-    sensor.stop();
-  } catch(e) {
-    assert_equals(e.name, "InvalidStateError");
-  }
+  assert_throws("InvalidStateError", function() { sensor.stop(); }, "stop() twice");
 }, "throw an InvalidStateError exception when state is either idle or errored");
 
 test(function() {

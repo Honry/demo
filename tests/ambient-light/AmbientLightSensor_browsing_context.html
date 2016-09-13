@@ -3,8 +3,8 @@
 <title>AmbientLightSensor Test: Sensor readings must only be available in the top-level browsing context</title>
 <link rel="author" title="Intel" href="http://www.intel.com">
 <link rel="help" href="https://www.w3.org/TR/ambient-light/">
-<script src="/resources/testharness.js"></script>
-<script src="/resources/testharnessreport.js"></script>
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
 <div id="log"></div>
 <iframe src="support-iframe.html" id="frame" style="display:none">
 </iframe>
@@ -19,17 +19,13 @@ async_test(function (t) {
 }, "sensor readings can not be fired within iframes");
 
 test(function() {
-  try {
-    let sensor = new AmbientLightSensor();
-    sensor.start();
-    var win = window.open('', '_blank');
-    let reading = String(sensor.reading);
-    win.close();
-    sensor.stop();
-    assert_equals(reading, "null");
-  } catch(e) {
-    assert_unreached('threw an unexpected exception "' + e.name + '"');
-  }
+  let sensor = new AmbientLightSensor();
+  sensor.start();
+  var win = window.open('', '_blank');
+  let reading = String(sensor.reading);
+  win.close();
+  sensor.stop();
+  assert_equals(reading, "null");
 }, "sensor readings can not be fired on the background tab");
 
 </script>
