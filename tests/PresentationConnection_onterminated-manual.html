@@ -21,7 +21,7 @@
   setup({explicit_timeout: true});
   var startPresentation = function () {
     async_test(function(t) {
-      var url = "support/presentation.html";
+      var url = "display/presentation.html";
       var request = new PresentationRequest(url);
       request.start()
         .then(function(connection) {
