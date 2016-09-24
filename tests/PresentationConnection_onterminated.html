@@ -42,7 +42,7 @@ async_test(function(t) {
     .then(function(connection) {
       assert_true(connection instanceof PresentationConnection);
       connection.onterminated = t.step_func_done(function(evt) {
-        assert_equals(evt.type, "terminated");
+        assert_equals(evt.type, "terminate");
         assert_equals(this.state, "terminated");
       });
       connection.onconnected = t.step_func(function() {
