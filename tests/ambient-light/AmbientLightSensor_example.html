@@ -12,7 +12,7 @@ try {
   sensor.start();
 
   sensor.onchange = function(event) {
-    console.log("sensor state: " + event.state);
+    console.log("sensor state: " + sensor.state);
     console.log("illuminance: " + event.reading.illuminance);
     console.log("timeStamp: " + event.reading.timeStamp);
   };
