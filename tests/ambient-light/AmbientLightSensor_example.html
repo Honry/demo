@@ -8,7 +8,7 @@
 <script>
 
 try {
-  let sensor = new AmbientLightSensor();
+  let sensor = new AmbientLightSensor({frequency: 60});
   sensor.start();
 
   sensor.onchange = function(event) {
