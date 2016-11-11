@@ -6,26 +6,29 @@
 <script src="../../resources/testharness.js"></script>
 <script src="../../resources/testharnessreport.js"></script>
 <div id="log"></div>
-<iframe src="support-iframe.html" id="frame" style="display:none">
+<iframe src="support-iframe.html" id="frame" style="display:none" sandbox="allow-scripts">
 </iframe>
 <script>
 
 async_test(function (t) {
-  document.getElementById('frame').onload = t.step_func_done(function(event) {
-    var iframe = document.getElementById('frame').contentWindow;
-    let reading = iframe.document.getElementById('reading').value;
-    assert_equals(reading, "null");
+  window.onmessage = t.step_func(function(e) {
+    assert_equals(e.data, "SecurityError");
+    t.done();
   });
 }, "sensor readings can not be fired within iframes");
 
 test(function() {
-  let sensor = new AmbientLightSensor();
-  sensor.start();
-  var win = window.open('', '_blank');
-  let reading = String(sensor.reading);
-  win.close();
-  sensor.stop();
-  assert_equals(reading, "null");
+  let win = window.open('', '_blank');
+  try {
+    let sensor = new AmbientLightSensor();
+    sensor.start();
+    assert_not_equals(String(sensor.reading), "[object AmbientLightSensorReading]");
+    sensor.stop();
+  } catch (e) {
+    assert_equals(e.name, "SecurityError");
+  } finally {
+    win.close();
+  }
 }, "sensor readings can not be fired on the background tab");
 
 </script>
