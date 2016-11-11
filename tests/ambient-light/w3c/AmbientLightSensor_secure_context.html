@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>AmbientLightSensor Test: secure context</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://www.w3.org/TR/ambient-light/">
+<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
+<div id="log"></div>
+<script>
+
+test(function() {
+  try {
+    let sensor = new AmbientLightSensor();
+    sensor.start();
+    assert_not_equals(String(sensor.reading), "[object AmbientLightSensorReading]");
+    sensor.stop();
+  } catch (e) {
+    assert_equals(e.name, "SecurityError");
+  }
+}, "Test that sensor readings must only be available within a secure context");
+
+</script>
