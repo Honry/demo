@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>AmbientLightSensor Test: secure context</title>
+<title>AmbientLightSensor Test: insecure context</title>
 <link rel="author" title="Intel" href="http://www.intel.com">
 <link rel="help" href="https://www.w3.org/TR/ambient-light/">
 <script src="../../resources/testharness.js"></script>
@@ -14,17 +14,10 @@
 </ol>
 <script>
 
-async_test(function(t) {
-  try {
+test(function() {
+  assert_throws('SecurityError', function() { 
     let sensor = new AmbientLightSensor();
-    sensor.onchange = t.step_func_done(function(event) {
-      assert_not_equals(String(sensor.reading), "[object AmbientLightSensorReading]");
-      sensor.stop();
-    });
-    sensor.start();
-  } catch (e) {
-    assert_equals(e.name, "SecurityError");
-  }
-}, "Test that sensor readings must only be available within a secure context");
+  });
+}, "This test if throw SecurityError in an insecurity context.");
 
 </script>
