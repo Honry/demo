@@ -15,7 +15,7 @@ async_test(function (t) {
     assert_equals(e.data, "SecurityError");
     t.done();
   });
-}, "sensor readings can not be fired within iframes");
+}, "throw a 'SecurityError' when firing sensor readings within iframes");
 
 async_test(function (t) {
   let sensor = new AmbientLightSensor();

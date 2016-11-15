@@ -27,7 +27,7 @@ test(function() {
   let cachedIlluminance = cachedReading.illuminance;
   sensor.stop();
   assert_equals(cachedReading.illuminance, cachedIlluminance);
-}, "Test that cached sensor reading must be immutable.");
+}, "Test that sensor reading must be immutable.");
 
 test(function() {
   assert_equals(cachedReading1, cachedReading2);

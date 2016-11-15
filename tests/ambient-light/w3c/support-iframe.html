@@ -3,8 +3,6 @@
 <script>
 try {
   let sensor = new AmbientLightSensor();
-  sensor.start();
-  sensor.stop();
   parent.postMessage( "sensor.start() can be fired within iframes" , '*');
 } catch (e) {
   parent.postMessage( e.name , '*');

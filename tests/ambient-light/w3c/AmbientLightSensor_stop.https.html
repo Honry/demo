@@ -23,7 +23,7 @@ async_test(function(t) {
     assert_unreached(event.error.name + ":" + event.error.message);
   });
   stop_return = sensor.stop();
-}, "The sensor.state changes to 'idle' after sensor.stop().");
+}, "The sensor.state changes to 'idle' after sensor.stop()");
 
 test(function() {
   assert_equals(sensor.reading, null);

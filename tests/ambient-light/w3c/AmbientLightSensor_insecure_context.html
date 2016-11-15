@@ -9,7 +9,7 @@
 <h2>Precondition</h2>
 <ol>
   <li>
-    This is an insecurity context.
+    Run test in an insecure context, e.g. http://example.com/.
   </li>
 </ol>
 <script>
@@ -18,6 +18,6 @@ test(function() {
   assert_throws('SecurityError', function() { 
     let sensor = new AmbientLightSensor();
   });
-}, "This test if throw SecurityError in an insecurity context.");
+}, "throw a 'SecurityError' when construct AmbientLightSensor in an insecure context");
 
 </script>
