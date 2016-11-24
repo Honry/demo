@@ -26,13 +26,14 @@ dictionary EventInit {
 </pre>
 
 <pre id="generic-idl">
+[SecureContext]
 interface Sensor : EventTarget {
   readonly attribute SensorState state;
   readonly attribute SensorReading? reading;
   void start();
   void stop();
   attribute EventHandler onchange;
-  attribute EventHandler onstatechange;
+  attribute EventHandler onactivate;
   attribute EventHandler onerror;
 };
 
@@ -43,31 +44,24 @@ dictionary SensorOptions {
 enum SensorState {
   "idle",
   "activating",
-  "active",
+  "activated",
   "errored"
 };
 
+[SecureContext]
 interface SensorReading {
   readonly attribute DOMHighResTimeStamp timeStamp;
 };
 
-[Constructor(DOMString type, SensorReadingEventInit eventInitDict)]
-interface SensorReadingEvent : Event {
-  readonly attribute SensorReading reading;
-};
-
-dictionary SensorReadingEventInit : EventInit {
-  SensorReading reading;
-};
-
-[Constructor(DOMString type, SensorErrorEventInit errorEventInitDict)]
+[SecureContext, Constructor(DOMString type, SensorErrorEventInit errorEventInitDict)]
 interface SensorErrorEvent : Event {
   readonly attribute Error error;
 };
 
 dictionary SensorErrorEventInit : EventInit {
-  Error error;
+  required Error error;
 };
+
 </pre>
 
 <pre id="magnetometer-idl">
@@ -99,9 +93,8 @@ dictionary MagnetometerReadingInit {
   idl_array.add_idls(document.getElementById('magnetometer-idl').textContent);
 
   idl_array.add_objects({
-    MagnetometerSensor: ['new MagnetometerSensor();'],
-    MagnetometerSensorReading: ['new MagnetometerSensorReading({x: 0.5, y: 0.5, z: 0.5});'],
-    SensorReadingEvent: ['new SensorReadingEvent("reading", { reading: new MagnetometerSensorReading({x: 0.5, y: 0.5, z: 0.5}) });']
+    Magnetometer: ['new Magnetometer();'],
+    MagnetometerReading: ['new MagnetometerReading({x: 0.5, y: 0.5, z: 0.5});']
   });
 
   idl_array.test();
