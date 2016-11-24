@@ -26,13 +26,14 @@ dictionary EventInit {
 </pre>
 
 <pre id="generic-idl">
+[SecureContext]
 interface Sensor : EventTarget {
   readonly attribute SensorState state;
   readonly attribute SensorReading? reading;
   void start();
   void stop();
   attribute EventHandler onchange;
-  attribute EventHandler onstatechange;
+  attribute EventHandler onactivate;
   attribute EventHandler onerror;
 };
 
@@ -43,31 +44,24 @@ dictionary SensorOptions {
 enum SensorState {
   "idle",
   "activating",
-  "active",
+  "activated",
   "errored"
 };
 
+[SecureContext]
 interface SensorReading {
   readonly attribute DOMHighResTimeStamp timeStamp;
 };
 
-[Constructor(DOMString type, SensorReadingEventInit eventInitDict)]
-interface SensorReadingEvent : Event {
-  readonly attribute SensorReading reading;
-};
-
-dictionary SensorReadingEventInit : EventInit {
-  SensorReading reading;
-};
-
-[Constructor(DOMString type, SensorErrorEventInit errorEventInitDict)]
+[SecureContext, Constructor(DOMString type, SensorErrorEventInit errorEventInitDict)]
 interface SensorErrorEvent : Event {
   readonly attribute Error error;
 };
 
 dictionary SensorErrorEventInit : EventInit {
-  Error error;
+  required Error error;
 };
+
 </pre>
 
 <pre id="accelerometer-idl">
@@ -83,15 +77,15 @@ dictionary AccelerometerOptions :  SensorOptions  {
 
 [Constructor(AccelerometerReadingInit AccelerometerReadingInit)]
 interface AccelerometerReading : SensorReading {
-    readonly attribute double accelerationX;
-    readonly attribute double accelerationY;
-    readonly attribute double accelerationZ;
+    readonly attribute double x;
+    readonly attribute double y;
+    readonly attribute double z;
 };
 
 dictionary AccelerometerReadingInit {
-    double accelerationX = 0;
-    double accelerationY = 0;
-    double accelerationZ = 0;
+    double x = 0;
+    double y = 0;
+    double z = 0;
 };
 </pre>
 
@@ -104,9 +98,8 @@ dictionary AccelerometerReadingInit {
   idl_array.add_idls(document.getElementById('accelerometer-idl').textContent);
 
   idl_array.add_objects({
-    AccelerometerSensor: ['new AccelerometerSensor({includeGravity: false});'],
-    AccelerometerSensorReading: ['new AccelerometerSensorReading({accelerationX: 0.5, accelerationY: 0.5, accelerationZ: 0.5});'],
-    SensorReadingEvent: ['new SensorReadingEvent("reading", { reading: new AccelerometerSensorReading({accelerationX: 0.5, accelerationY: 0.5, accelerationZ: 0.5}) });']
+    Accelerometer: ['new Accelerometer({includeGravity: false});'],
+    AccelerometerReading: ['new AccelerometerReading({x: 0.5, y: 0.5, z: 0.5});']
   });
 
   idl_array.test();
