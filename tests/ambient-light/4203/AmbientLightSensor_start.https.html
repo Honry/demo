@@ -27,6 +27,8 @@ test(() => {
   assert_equals(sensor.state, "activating");
 }, "The sensor.state changes to 'activating' after sensor.start()");
 
+//TODO: The permission is not ready.
+
 test(() => {
   assert_equals(start_return, undefined);
 }, "the sensor.start() return undefined");
@@ -35,5 +37,7 @@ test(() => {
   assert_throws("InvalidStateError", () => { sensor.start(); }, "start() twice");
   sensor.stop();
 }, "throw an InvalidStateError exception when state is neither idle nor errored");
+
+
 
 </script>
