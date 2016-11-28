@@ -12,8 +12,8 @@
 
   sensor.onchange = function(event) {
     console.log("sensor state: " + sensor.state);
-    console.log("illuminance: " + event.reading.illuminance);
-    console.log("timeStamp: " + event.reading.timeStamp);
+    console.log("illuminance: " + sensor.reading.illuminance);
+    console.log("timeStamp: " + sensor.reading.timeStamp);
   };
   document.getElementById("itext").innerText = "illuminance = " + sensor.reading.illuminance;
   sensor.onerror = function(event) {
