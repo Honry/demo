@@ -12,7 +12,7 @@
   sensor.onchange = function(event) {
     document.getElementById("itext").innerText = "illuminance = " + sensor.reading.illuminance;
   };
-  sensor.onactivate = () => document.getElementById("itext").innerText = "onactivate: illuminance = " + sensor.reading.illuminance;
+  sensor.onactivate = () => document.getElementById("itext").innerText = "onactivate: illuminance = " + sensor.reading;
   sensor.onerror = function(event) {
     console.log(event.error.name, event.error.message);
   };
