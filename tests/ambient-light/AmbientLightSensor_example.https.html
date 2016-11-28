@@ -8,15 +8,16 @@
 <div id="itext"><div>
 <script>
   let sensor = new AmbientLightSensor();
-  sensor.start();
+
 
   sensor.onchange = function(event) {
     console.log("sensor state: " + sensor.state);
     console.log("illuminance: " + sensor.reading.illuminance);
     console.log("timeStamp: " + sensor.reading.timeStamp);
   };
-  document.getElementById("itext").innerText = "illuminance = " + sensor.reading.illuminance;
   sensor.onerror = function(event) {
     console.log(event.error.name, event.error.message);
   };
+  sensor.start();
+  document.getElementById("itext").innerText = "illuminance = " + sensor.reading.illuminance;
 </script>
