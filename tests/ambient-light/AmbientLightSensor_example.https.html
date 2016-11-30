@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>AmbientLightSensor Test: Basic functionality test</title>
-<link rel="author" title="Wanming Lin" href="https://github.com/Honry">
+<title>AmbientLightSensor Test: test</title>
 <!--<script src="../resources/testharness.js"></script>
 <script src="../resources/testharnessreport.js"></script> -->
-<div id="itext"><div>
 <script>
-  let sensor = new AmbientLightSensor();
-
-
-  sensor.onchange = function(event) {
-    document.getElementById("itext").innerText = "illuminance = " + sensor.reading.illuminance;
+function sensor_test(sensorType) {
+  let sensor = new sensorType();
+  sensor.onchange = () => {
+    console.log(sensorType, " readings in 'onchange' event: ", sensor.reading);
+    sensor.stop();
   };
-  sensor.onactivate = () => document.getElementById("itext").innerText = "onactivate: illuminance = " + sensor.reading;
-  sensor.onerror = function(event) {
-    console.log(event.error.name, event.error.message);
-  };
-  sensor.start();
+  sensor.onactivate = () => console.log(sensorType, " readings in 'onactivate' event: ", sensor.reading);
+  sensor.onerror = event => console.log(event.error.name, event.error.message);
+  sensor.start(); 
+}
   
+sensor_test(AmbientLightSensor);
+sensor_test(Gyroscope);
 </script>
