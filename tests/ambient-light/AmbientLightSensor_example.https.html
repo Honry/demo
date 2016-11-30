@@ -7,11 +7,11 @@
 function sensor_test(sensorType) {
   let sensor = new sensorType();
   sensor.onchange = () => {
-    console.log(sensorType, " readings in 'onchange' event: ", sensor.reading);
+    console.log(sensorType.toString(), " readings in 'onchange' event: ", sensor.reading);
     sensor.stop();
   };
-  sensor.onactivate = () => console.log(sensorType, " readings in 'onactivate' event: ", sensor.reading);
-  sensor.onerror = event => console.log(event.error.name, event.error.message);
+  sensor.onactivate = () => console.log(sensorType.toString(), " readings in 'onactivate' event: ", sensor.reading);
+  sensor.onerror = event => console.log(sensorType.toString(), ": ", event.error.name, event.error.message);
   sensor.start(); 
 }
   
