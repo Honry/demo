@@ -4,17 +4,17 @@
 <!--<script src="../resources/testharness.js"></script>
 <script src="../resources/testharnessreport.js"></script> -->
 <script>
-function sensor_test(sensorType) {
+function sensor_test(sensorType, sensorName) {
   let sensor = new sensorType();
   sensor.onchange = () => {
-    console.log(sensorType.toString(), " readings in 'onchange' event: ", sensor.reading);
+    console.log(sensorName, " readings in 'onchange' event: ", sensor.reading);
     sensor.stop();
   };
-  sensor.onactivate = () => console.log(sensorType.toString(), " readings in 'onactivate' event: ", sensor.reading);
-  sensor.onerror = event => console.log(sensorType.toString(), ": ", event.error.name, event.error.message);
+  sensor.onactivate = () => console.log(sensorName, " readings in 'onactivate' event: ", sensor.reading);
+  sensor.onerror = event => console.log(sensorName, ": ", event.error.name, event.error.message);
   sensor.start(); 
 }
   
-sensor_test(AmbientLightSensor);
-sensor_test(Gyroscope);
+sensor_test(AmbientLightSensor, "AmbientLightSensor");
+sensor_test(Gyroscope, "Gyroscope");
 </script>
