@@ -2,13 +2,11 @@ function runGenericSensorTests(sensorType, readingType, verifyReading, arrReadin
   async_test(t => {
     let sensor = new sensorType();
     sensor.start();
-
     sensor.onchange = t.step_func_done(() => {
       assert_true(verifyReading(sensor.reading));
       assert_equals(sensor.state, "activated");
       sensor.stop();
     });
-
     sensor.onerror = t.step_func_done(event => {
       assert_unreached(event.error.name + ":" + event.error.message);
     });
@@ -22,7 +20,7 @@ function runGenericSensorTests(sensorType, readingType, verifyReading, arrReadin
       let cached1 = arrReading(cachedReading);
       sensor.stop();
       let cached2 = arrReading(cachedReading);
-      for (i=0;i<cached2.length;i++) {
+      for (var i = 0; i < cached2.length; i++) {
         assert_equals(cached1[i], cached2[i]);
       }
     });
@@ -56,7 +54,7 @@ function runGenericSensorTests(sensorType, readingType, verifyReading, arrReadin
     let sensor = new sensorType();
     sensor.start();
     let cachedReading1;
-    sensor.onchange = event => {
+    sensor.onactivate = function() {
       cachedReading1 = sensor.reading;
     };
     sensor.onerror = t.step_func_done(event => {
@@ -139,12 +137,10 @@ function runGenericSensorOnerror(sensorType, sensorName) {
   async_test(t => {
     let sensor = new sensorType();
     sensor.onactivate = t.step_func_done(assert_unreached);
-
     sensor.onerror = t.step_func_done(event => {
       assert_equals(sensor.state, 'errored');
       assert_equals(event.error.name, 'NotFoundError');
     });
-
     sensor.start();
   }, "Test that 'onerror' event is fired when " + sensorName + " sensor is not supported");
 }

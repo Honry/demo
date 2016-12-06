@@ -36,13 +36,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <script src="./resources/generic-sensor-tests.js"></script>
 <div id="log"></div>
 <script>
+
 function verify_sensor_reading(reading) {
   return reading.x != 0 ||
          reading.y != 0 ||
          reading.z != 0;
 }
+
 function arr_sensor_reading(reading) {
   return new Array(reading.x, reading.y, reading.z);
 }
-runGenericSensorTests(Magnetometer, MagnetometerReading, verify_sensor_reading, arr_sensor_reading)
+
+runGenericSensorTests(Magnetometer, MagnetometerReading, verify_sensor_reading, arr_sensor_reading);
+
 </script>

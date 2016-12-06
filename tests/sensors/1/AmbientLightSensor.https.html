@@ -36,11 +36,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <script src="./resources/generic-sensor-tests.js"></script>
 <div id="log"></div>
 <script>
+
 function verify_sensor_reading(reading) {
   return reading.illuminance >= 0;
 }
+
 function arr_sensor_reading(reading) {
   return new Array(reading.illuminance);
 }
-runGenericSensorTests(AmbientLightSensor, AmbientLightSensorReading, verify_sensor_reading, arr_sensor_reading)
+
+runGenericSensorTests(AmbientLightSensor, AmbientLightSensorReading, verify_sensor_reading, arr_sensor_reading);
+
 </script>
