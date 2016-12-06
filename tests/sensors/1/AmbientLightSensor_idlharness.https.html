@@ -27,10 +27,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
 <meta charset="utf-8">
-<title>Accelerometer Sensor IDL tests</title>
+<title>Ambient Light Sensor IDL tests</title>
 <link rel="author" title="Intel" href="http://www.intel.com">
 <link rel="author" title="Xiuqi Jiang" href="mailto:xiuqix.jiang@intel.com">
-<link rel="help" href="https://w3c.github.io/accelerometer/">
+<link rel="help" href="https://w3c.github.io/ambient-light/">
 <script src="../resources/testharness.js"></script>
 <script src="../resources/testharnessreport.js"></script>
 <script src="./resources/WebIDLParser.js"></script>
@@ -98,42 +98,32 @@ dictionary SensorErrorEventInit : EventInit {
 
 </pre>
 
-<pre id="accelerometer-idl">
-[Constructor(optional AccelerometerOptions accelerometerOptions)]
-interface Accelerometer : Sensor {
-  readonly attribute AccelerometerReading? reading;
-  readonly attribute boolean includesGravity;
+<pre id="ambient-light-idl">
+[Constructor(optional SensorOptions sensorOptions)]
+interface AmbientLightSensor : Sensor {
 };
 
-dictionary AccelerometerOptions :  SensorOptions  {
-  boolean includeGravity = true;
+[Constructor(AmbientLightSensorReadingInit ambientLightSensorReadingInit)]
+interface AmbientLightSensorReading : SensorReading {
+    readonly attribute unrestricted double illuminance;
 };
 
-[Constructor(AccelerometerReadingInit AccelerometerReadingInit)]
-interface AccelerometerReading : SensorReading {
-    readonly attribute double x;
-    readonly attribute double y;
-    readonly attribute double z;
-};
-
-dictionary AccelerometerReadingInit {
-    double x = 0;
-    double y = 0;
-    double z = 0;
+dictionary AmbientLightSensorReadingInit {
+  required unrestricted double illuminance;
 };
 </pre>
 
 <script>
-(function() {
+(() => {
   "use strict";
   var idl_array = new IdlArray();
   idl_array.add_untested_idls(document.getElementById('idl').textContent);
   idl_array.add_untested_idls(document.getElementById('generic-idl').textContent);
-  idl_array.add_idls(document.getElementById('accelerometer-idl').textContent);
+  idl_array.add_idls(document.getElementById('ambient-light-idl').textContent);
 
   idl_array.add_objects({
-    Accelerometer: ['new Accelerometer();'],
-    AccelerometerReading: ['new AccelerometerReading({x: 0.5, y: 0.5, z: 0.5});']
+    AmbientLightSensor: ['new AmbientLightSensor();'],
+    AmbientLightSensorReading: ['new AmbientLightSensorReading({ illuminance: 750 });']
   });
 
   idl_array.test();
