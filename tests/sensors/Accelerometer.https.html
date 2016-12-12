@@ -52,17 +52,15 @@ async_test(t => {
   let sensor2 = new Accelerometer({includeGravity: false});
   sensor1.start();
   sensor2.start();
-  sensor1.onchange = t.step_func_done(() => {
-    let cached1 = arr_sensor_reading(sensor1.reading);
-    let cached2 = arr_sensor_reading(sensor2.reading);
-    for (var i = 0; i < cached2.length; i++) {
-      assert_not_equals(cached1[i], cached2[i]);
-    }
+  sensor1.onactivate = t.step_func_done(() => {
+    assert_not_equals(sensor1.reading, sensor2.reading);
+    sensor1.stop();
+    sensor2.stop();
   });
   sensor1.onerror = t.step_func_done(event => {
     assert_unreached(event.error.name + ":" + event.error.message);
   });
-}, "Test that get different X, Y and Z axis values by includeGravity are true and false.");
+}, "Test that when construct Accelerometer with includeGravity that is set to false, the reading is different from the one with default Accelerometer..");
 
 runSensorFrequency(Accelerometer);
 runGenericSensorTests(Accelerometer, AccelerometerReading, verify_sensor_reading, arr_sensor_reading);

@@ -19,7 +19,7 @@ function runGenericSensorTests(sensorType, readingType, verifyReading, arrReadin
     sensor2.start();
     sensor1.onactivate = t.step_func_done(() => {
       let cachedReading1 = sensor1.reading;
-      let cached1 = arrReading(cachedReading1);
+      let cached1 = cachedReading1;
       let cachedReading2 = sensor2.reading;
       //both sensors share the same reading instance
       assert_equals(cachedReading1, cachedReading2);
@@ -30,10 +30,8 @@ function runGenericSensorTests(sensorType, readingType, verifyReading, arrReadin
       sensor2.stop();
       assert_equals(sensor2.reading, null);
       //sensor reading must be immutable
-      let cached2 = arrReading(cachedReading1);
-      for (var i = 0; i < cached2.length; i++) {
-        assert_equals(cached1[i], cached2[i]);
-      }
+      let cached2 = cachedReading1;
+      assert_equals(cachedReading1, cachedReading2);
     });
     sensor1.onerror = t.step_func_done(event => {
       assert_unreached(event.error.name + ":" + event.error.message);
@@ -151,30 +149,31 @@ function runSensorFrequency(sensorType) {
   }, "Test that negative frequency causes exception from constructor.");
 
   async_test(t => {
-    let sensor1 = new sensorType({frequency: 30});
-    let sensor2 = new sensorType({frequency: 10});
-    sensor1.start();
-    sensor2.start();
-    let number1 = 0;
-    let number2 = 0;
-    sensor1.onchange = () => {
-      number1++;
+    let fastSensor = new sensorType({frequency: 30});
+    let slowSensor = new sensorType({frequency: 9});
+    slowSensor.start();
+    let fastSensorNumber = 0;
+    let slowSensorNumber = 0;
+    fastSensor.onchange = () => {
+      fastSensorNumber++;
     };
-    sensor2.onchange = () => {
-      number2++;
-    };
-    sensor1.onerror = t.step_func_done(event => {
+    slowSensor.onchange = t.step_func(() => {
+      slowSensorNumber++;
+      if (slowSensorNumber == 1) {
+        fastSensor.start();
+      } else if (slowSensorNumber == 2) {
+        assert_equals(fastSensorNumber, 3);
+        fastSensor.stop();
+        slowSensor.stop();
+        t.done();
+      }
+    });
+    fastSensor.onerror = t.step_func_done(event => {
       assert_unreached(event.error.name + ":" + event.error.message);
     });
-    sensor2.onerror = t.step_func_done(event => {
+    slowSensor.onerror = t.step_func_done(event => {
       assert_unreached(event.error.name + ":" + event.error.message);
     });
-    t.step_timeout(() => {
-      assert_equals(Math.round(number1/number2), 3);
-      sensor1.stop();
-      sensor2.stop();
-      t.done();
-    }, 1000);
   }, "Test that the frequency hint is correct.");
 
   async_test(t => {
