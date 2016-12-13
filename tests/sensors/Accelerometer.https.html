@@ -44,8 +44,8 @@ function verify_sensor_reading(reading) {
 }
 
 async_test(t => {
-  let sensor1 = new Accelerometer();
-  let sensor2 = new Accelerometer({includeGravity: false});
+  let sensor1 = new Accelerometer({includeGravity: false});
+  let sensor2 = new Accelerometer();
   sensor1.onactivate = t.step_func_done(() => {
     assert_not_equals(sensor1.reading, sensor2.reading);
     sensor1.stop();
