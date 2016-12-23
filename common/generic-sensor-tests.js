@@ -106,10 +106,6 @@ function runGenericSensorTests(sensorType, readingType, verifyReading) {
   }, "test that sensor.stop() is correct");
 
   async_test(t => {
-    let frame = document.createElement('iframe');
-    frame.sandbox = "allow-scripts";
-    frame.style = "display:none";
-    frame.src = "support-iframe.html";
     window.onmessage = t.step_func(e => {
       assert_equals(e.data, "SecurityError");
       t.done();
