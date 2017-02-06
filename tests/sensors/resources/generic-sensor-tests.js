@@ -38,7 +38,7 @@ function runGenericSensorTests(sensorType, verifyReading) {
     let sensor = new sensorType();
     let cachedTimeStamp1;
     sensor.onactivate = () => {
-      cachedTimeStamp1 = sensor.timeStamp;
+      cachedTimeStamp1 = sensor.timestamp;
     };
     sensor.onerror = t.step_func_done(event => {
       assert_unreached(event.error.name + ":" + event.error.message);
@@ -47,7 +47,7 @@ function runGenericSensorTests(sensorType, verifyReading) {
     t.step_timeout(() => {
       sensor.onchange = t.step_func_done(() => {
         //sensor.timeStamp need change.
-        let cachedTimeStamp2 = sensor.timeStamp;
+        let cachedTimeStamp2 = sensor.timestamp;
         assert_greater_than(cachedTimeStamp2, cachedTimeStamp1);
         sensor.stop();
         t.done();
