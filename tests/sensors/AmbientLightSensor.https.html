@@ -37,10 +37,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <div id="log"></div>
 <script>
 
-function verify_sensor_reading(reading) {
-  return reading.illuminance >= 0;
+function verify_sensor_reading(sensor, should_be_null) {
+  if (should_be_null) {
+    return sensor.illuminance == null &&
+           sensor.timestamp == null;
+  }
+  return sensor.illuminance != null &&
+         sensor.timestamp != null;
 }
 
-runGenericSensorTests(AmbientLightSensor, AmbientLightSensorReading, verify_sensor_reading);
+runGenericSensorTests(AmbientLightSensor, verify_sensor_reading);
 
 </script>
