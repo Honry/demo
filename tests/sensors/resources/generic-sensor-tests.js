@@ -46,14 +46,14 @@ function runGenericSensorTests(sensorType, verifyReading) {
     sensor.start();
     t.step_timeout(() => {
       sensor.onchange = t.step_func_done(() => {
-        //sensor.timeStamp need change.
+        //sensor.timestamp need change.
         let cachedTimeStamp2 = sensor.timestamp;
         assert_greater_than(cachedTimeStamp2, cachedTimeStamp1);
         sensor.stop();
         t.done();
       });
     }, 1000);
-  }, "Test that the sensor timeStamp is updated when time passes.");
+  }, "Test that the sensor timestamp is updated when time passes.");
 
   test(() => {
     let sensor, start_return;
