@@ -87,7 +87,7 @@ function runGenericSensorTests(sensorType, verifyReading) {
   }, "Test that sensor.stop() is correct.");
 }
 
-function runGenericSensorBrowsingContext(sensorType) {
+function runGenericSensorBrowsingContext(sensorType, verifyReading) {
   async_test(t => {
     window.onmessage = t.step_func(e => {
       assert_equals(e.data, "SecurityError");

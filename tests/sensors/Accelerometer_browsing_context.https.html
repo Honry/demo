@@ -39,6 +39,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 </iframe>
 <script>
 
-runGenericSensorBrowsingContext(Accelerometer);
+function verify_sensor_reading(sensor, should_be_bull) {
+  if (should_be_bull) {
+    return sensor.x == null &&
+           sensor.y == null &&
+           sensor.z == null &&
+           sensor.timestamp == null;
+  }
+  return sensor.x != null &&
+         sensor.y != null &&
+         sensor.z != null &&
+         sensor.timestamp != null;
+}
+
+runGenericSensorBrowsingContext(Accelerometer, verify_sensor_reading);
 
 </script>
