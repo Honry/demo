@@ -97,7 +97,7 @@ dictionary SensorErrorEventInit : EventInit {
 <pre id="ambient-light-idl">
 [Constructor(optional SensorOptions sensorOptions)]
 interface AmbientLightSensor : Sensor {
-  readonly attribute unrestricted double illuminance;
+  readonly attribute unrestricted double? illuminance;
 };
 </pre>
 
