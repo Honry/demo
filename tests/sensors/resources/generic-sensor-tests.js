@@ -126,7 +126,7 @@ function runGenericSensorOnerror(sensorType) {
     sensor.onactivate = t.step_func_done(assert_unreached);
     sensor.onerror = t.step_func_done(event => {
       assert_equals(sensor.state, 'errored');
-      assert_equals(event.error.name, 'NotFoundError');
+      assert_equals(event.error.name, 'NotReadableError');
     });
     sensor.start();
   }, "Test that 'onerror' event is fired when sensor is not supported");
