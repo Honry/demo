@@ -73,7 +73,7 @@ async_test(t => {
   });
   sensor1.start();
   sensor2.start();
-}, "Test that when construct Accelerometer with includeGravity that is set to false, the reading is different from the one with default Accelerometer.");
+}, "when construct Accelerometer with includeGravity that is set to false, the reading is different from the default one");
 
 runSensorFrequency(Accelerometer);
 runGenericSensorTests(Accelerometer, verify_sensor_reading);
