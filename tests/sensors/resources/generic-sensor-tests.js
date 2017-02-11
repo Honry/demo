@@ -50,7 +50,7 @@ function runGenericSensorTests(sensorType, verifyReading) {
     sensor.start();
     t.step_timeout(() => {
       sensor.onchange = t.step_func_done(() => {
-        //sensor.timestamp need change.
+        //sensor.timestamp changes.
         let cachedTimeStamp2 = sensor.timestamp;
         assert_greater_than(cachedTimeStamp2, cachedTimeStamp1);
         sensor.stop();
@@ -74,7 +74,7 @@ function runGenericSensorTests(sensorType, verifyReading) {
     //the sensor.start() return undefined
     assert_equals(start_return, undefined);
     sensor.stop();
-  }, "Test that sensor.start() is correct.");
+  }, "sensor.start() is correct");
 
   test(() => {
     let sensor, stop_return;
@@ -88,7 +88,7 @@ function runGenericSensorTests(sensorType, verifyReading) {
     assert_equals(sensor.state, "idle");
     //the sensor.stop() returns undefined
     assert_equals(stop_return, undefined);
-  }, "Test that sensor.stop() is correct.");
+  }, "sensor.stop() is correct");
 }
 
 function runGenericSensorBrowsingContext(sensorType, verifyReading) {
@@ -133,13 +133,13 @@ function runGenericSensorOnerror(sensorType) {
       assert_equals(event.error.name, 'NotReadableError');
     });
     sensor.start();
-  }, "Test that 'onerror' event is fired when sensor is not supported");
+  }, "'onerror' event is fired when sensor is not supported");
 }
 
 function runSensorFrequency(sensorType) {
   test(() => {
-    assert_throws(new RangeError(), () => new sensorType({frequency: -60}))
-  }, "Test that negative frequency causes exception from constructor.");
+    assert_throws(new RangeError(), () => new sensorType({frequency: -60}));
+  }, "negative frequency causes exception from constructor");
 
   async_test(t => {
     let fastSensor = new sensorType({frequency: 30});
@@ -184,5 +184,5 @@ function runSensorFrequency(sensorType) {
       sensor.stop();
       t.done();
     }, 1000);
-  }, "Test that frequency is capped to 60.0 Hz.");
+  }, "frequency is capped to 60.0 Hz");
 }
