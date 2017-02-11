@@ -16,13 +16,17 @@ function runGenericSensorTests(sensorType, verifyReading) {
     let sensor1 = new sensorType();
     let sensor2 = new sensorType();
     sensor1.onactivate = t.step_func_done(() => {
+      // Reading values are correct for both sensors.
+      assert_true(verifyReading(sensor1));
+      assert_true(verifyReading(sensor2));
+
       //After first sensor stops its reading values are null,
       //reading values for the second sensor remains
       sensor1.stop();
-      assert_true(verifyReading(sensor1, true));
+      assert_true(verifyReading(sensor1, true /*should be null*/));
       assert_true(verifyReading(sensor2));
       sensor2.stop();
-      assert_true(verifyReading(sensor2, true));
+      assert_true(verifyReading(sensor2, true /*should be null*/));
     });
     sensor1.onerror = t.step_func_done(event => {
       assert_unreached(event.error.name + ":" + event.error.message);
@@ -32,7 +36,7 @@ function runGenericSensorTests(sensorType, verifyReading) {
     });
     sensor1.start();
     sensor2.start();
-  }, "Test that sensor reading is correct.");
+  }, "sensor reading is correct");
 
   async_test(t => {
     let sensor = new sensorType();
@@ -53,7 +57,7 @@ function runGenericSensorTests(sensorType, verifyReading) {
         t.done();
       });
     }, 1000);
-  }, "Test that the sensor timestamp is updated when time passes.");
+  }, "timestamp is updated when time passes");
 
   test(() => {
     let sensor, start_return;
