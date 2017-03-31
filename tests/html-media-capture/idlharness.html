@@ -26,12 +26,16 @@
 
     <pre id='idl' style='display:none'>
       partial interface HTMLInputElement {
-                      attribute boolean capture;
+        attribute CaptureFacingMode capture;
+      };
+      enum CaptureFacingMode {
+        "user",
+        "environment"
       };
     </pre>
 
     <form style='display:none'>
-      <input id='testElement' type='file' accept='image/*' capture>
+      <input id='testElement' type='file' accept='image/*' capture="user">
     </form>
 
     <script>
