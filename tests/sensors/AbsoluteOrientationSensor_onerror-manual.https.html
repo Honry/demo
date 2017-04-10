@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-Copyright (c) 2016 Intel Corporation.
+Copyright (c) 2017 Intel Corporation.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -27,32 +27,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
 <meta charset="utf-8">
-<title>AmbientLightSensor Test</title>
+<title>AbsoluteOrientationSensor Test: onerror</title>
 <link rel="author" title="Intel" href="http://www.intel.com">
 <link rel="author" title="Xiuqi Jiang" href="mailto:xiuqix.jiang@intel.com">
-<link rel="help" href="https://w3c.github.io/ambient-light/">
+<link rel="help" href="https://w3c.github.io/orientation-sensor/">
 <script src="../resources/testharness.js"></script>
 <script src="../resources/testharnessreport.js"></script>
 <script src="./resources/generic-sensor-tests.js"></script>
 <div id="log"></div>
-<iframe src="./resources/AmbientLightSensor-support-iframe.html" id="frame" style="display:none" sandbox="allow-scripts">
-</iframe>
+<h2>Precondition</h2>
+<ol>
+  <li>
+    Disable the motion sensors which the underlying physical sensors include Accelerometer, Magnetometer, AND (when present) Gyroscope or run test on a device without the motion sensors.
+  </li>
+</ol>
 <script>
 
-function verify_sensor_reading(sensor, reading_not_null = true) {
-  if (reading_not_null) {
-    return sensor.illuminance != null &&
-           sensor.timestamp != null;
-  }
-  return sensor.illuminance == null &&
-         sensor.timestamp == null;
-}
-
-function reading_to_array(sensor) {
-  let arr = new Array(sensor.timestamp, sensor.illuminance);
-  return arr;
-}
-
-runGenericSensorTests(AmbientLightSensor, verify_sensor_reading, reading_to_array);
+runGenericSensorOnerror(AbsoluteOrientationSensor);
 
 </script>

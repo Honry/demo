@@ -1,49 +1,13 @@
-var unreached = event => {
+let unreached = event => {
   assert_unreached(event.error.name + ":" + event.error.message);
 };
 
-var properties = {
-  'AmbientLightSensor':['timestamp', 'illuminance'],
-  'Accelerometer':['timestamp', 'x', 'y', 'z'],
-  'Gyroscope':['timestamp', 'x', 'y', 'z'],
-  'Magnetometer':['timestamp', 'x', 'y', 'z']
-};
-
-function assert_reading_not_null(sensor) {
-  for (let property in properties[sensor.constructor.name]) {
-    let propertyName = properties[sensor.constructor.name][property];
-    if (sensor[propertyName] == null) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function assert_reading_null(sensor) {
-  for (let property in properties[sensor.constructor.name]) {
-    let propertyName = properties[sensor.constructor.name][property];
-    if (sensor[propertyName] != null) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function reading_to_array(sensor) {
-  let arr = new Array();
-  for (let property in properties[sensor.constructor.name]) {
-    let propertyName = properties[sensor.constructor.name][property];
-    arr[property] = sensor[propertyName];
-  }
-  return arr;
-}
-
-function runGenericSensorTests(sensorType) {
+function runGenericSensorTests(sensorType, verifyReading, readingToArray) {
   async_test(t => {
     let sensor = new sensorType();
     sensor.onchange = t.step_func_done(() => {
-      assert_true(assert_reading_not_null(sensor));
-      assert_equals(sensor.state, "activated");
+      assert_true(verifyReading(sensor));
+      assert_true(sensor.activated);
       sensor.stop();
     });
     sensor.onerror = t.step_func_done(unreached);
@@ -55,15 +19,15 @@ function runGenericSensorTests(sensorType) {
     let sensor2 = new sensorType();
     sensor1.onactivate = t.step_func_done(() => {
       // Reading values are correct for both sensors.
-      assert_true(assert_reading_not_null(sensor1));
-      assert_true(assert_reading_not_null(sensor2));
+      assert_true(verifyReading(sensor1));
+      assert_true(verifyReading(sensor2));
       //After first sensor stops its reading values are null,
       //reading values for the second sensor remains
       sensor1.stop();
-      assert_true(assert_reading_null(sensor1));
-      assert_true(assert_reading_not_null(sensor2));
+      assert_true(verifyReading(sensor1, false));
+      assert_true(verifyReading(sensor2));
       sensor2.stop();
-      assert_true(assert_reading_null(sensor2));
+      assert_true(verifyReading(sensor2, false));
     });
     sensor1.onerror = t.step_func_done(unreached);
     sensor2.onerror = t.step_func_done(unreached);
@@ -99,11 +63,11 @@ function runGenericSensorTests(sensorType) {
   async_test(t => {
     let sensor = new sensorType();
     sensor.onactivate = t.step_func(() => {
-      assert_true(assert_reading_not_null(sensor));
-      let cachedSensor1 = reading_to_array(sensor);
+      assert_true(verifyReading(sensor));
+      let cachedSensor1 = readingToArray(sensor);
       let win = window.open('', '_blank');
       t.step_timeout(() => {
-        let cachedSensor2 = reading_to_array(sensor);
+        let cachedSensor2 = readingToArray(sensor);
         win.close();
         sensor.stop();
         assert_array_equals(cachedSensor1, cachedSensor2);
@@ -117,14 +81,14 @@ function runGenericSensorTests(sensorType) {
   test(() => {
     let sensor = new sensorType();
     sensor.onerror = unreached;
-    assert_equals(sensor.state, "unconnected");
-  }, "default sensor.state is 'unconnected'");
+    assert_false(sensor.activated);
+  }, "default sensor.state is 'idle' not 'activated'");
 
   test(() => {
     let sensor = new sensorType();
     sensor.onerror = unreached;
     sensor.start();
-    assert_equals(sensor.state, "activating");
+    assert_false(sensor.activated);
     sensor.stop();
   }, "sensor.state changes to 'activating' after sensor.start()");
 
@@ -143,7 +107,7 @@ function runGenericSensorTests(sensorType) {
       sensor.onerror = unreached;
       sensor.start();
       sensor.start();
-      assert_equals(sensor.state, "activating");
+      assert_false(sensor.activated);
       sensor.stop();
     } catch (e) {
        assert_unreached(e.name + ": " + e.message);
@@ -155,7 +119,7 @@ function runGenericSensorTests(sensorType) {
     sensor.onerror = unreached;
     sensor.start();
     sensor.stop();
-    assert_equals(sensor.state, "idle");
+    assert_false(sensor.activated);
   }, "sensor.state changes to 'idle' after sensor.stop()");
 
   test(() => {
@@ -174,7 +138,7 @@ function runGenericSensorTests(sensorType) {
       sensor.start();
       sensor.stop();
       sensor.stop();
-      assert_equals(sensor.state, "idle");
+      assert_false(sensor.activated);
     } catch (e) {
        assert_unreached(e.name + ": " + e.message);
     }
@@ -192,7 +156,7 @@ function runGenericSensorOnerror(sensorType) {
     let sensor = new sensorType();
     sensor.onactivate = t.step_func_done(assert_unreached);
     sensor.onerror = t.step_func_done(event => {
-      assert_equals(sensor.state, 'errored');
+      assert_false(sensor.activated);
       assert_equals(event.error.name, 'NotReadableError');
     });
     sensor.start();
@@ -200,10 +164,6 @@ function runGenericSensorOnerror(sensorType) {
 }
 
 function runSensorFrequency(sensorType) {
-  test(() => {
-    assert_throws(new RangeError(), () => new sensorType({frequency: -60}));
-  }, "negative frequency causes exception from constructor");
-
   async_test(t => {
     let fastSensor = new sensorType({frequency: 30});
     let slowSensor = new sensorType({frequency: 9});
