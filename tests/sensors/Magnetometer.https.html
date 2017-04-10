@@ -39,7 +39,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 </iframe>
 <script>
 
+function verify_sensor_reading(sensor, reading_not_null = true) {
+  if (reading_not_null) {
+    return sensor.x != null &&
+           sensor.y != null &&
+           sensor.z != null &&
+           sensor.timestamp != null;
+  }
+  return sensor.x == null &&
+         sensor.y == null &&
+         sensor.z == null &&
+         sensor.timestamp == null;
+}
+
+function reading_to_array(sensor) {
+  let arr = new Array(sensor.timestamp, sensor.x, sensor.y, sensor.z);
+  return arr;
+}
+
 runSensorFrequency(Magnetometer);
-runGenericSensorTests(Magnetometer);
+runGenericSensorTests(Magnetometer, verify_sensor_reading, reading_to_array);
 
 </script>

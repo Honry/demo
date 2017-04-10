@@ -2,8 +2,7 @@
 <meta charset="utf-8">
 <script>
 try {
-  console.log(window.location.href.split('#')[1]);
-  let sensor = new window.location.href.split('#')[1]();
+  let sensor = new AbsoluteOrientationSensor();
   parent.postMessage( "sensor.start() can be fired within iframes" , '*');
 } catch (e) {
   parent.postMessage( e.name , '*');
