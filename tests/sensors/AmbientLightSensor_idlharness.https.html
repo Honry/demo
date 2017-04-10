@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-Copyright (c) 2016 Intel Corporation.
+Copyright (c) 2017 Intel Corporation.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -62,7 +62,7 @@ interface EventHandler {
 <pre id="generic-idl">
 [SecureContext]
 interface Sensor : EventTarget {
-  readonly attribute SensorState state;
+  readonly attribute boolean activated;
   readonly attribute DOMHighResTimeStamp? timestamp;
   void start();
   void stop();
@@ -75,14 +75,6 @@ dictionary SensorOptions {
   double? frequency;
 };
 
-enum SensorState {
-  "unconnected",
-  "activating",
-  "activated",
-  "idle",
-  "errored"
-};
-
 [SecureContext, Constructor(DOMString type, SensorErrorEventInit errorEventInitDict)]
 interface SensorErrorEvent : Event {
   readonly attribute Error error;
@@ -91,7 +83,6 @@ interface SensorErrorEvent : Event {
 dictionary SensorErrorEventInit : EventInit {
   required Error error;
 };
-
 </pre>
 
 <pre id="ambient-light-idl">

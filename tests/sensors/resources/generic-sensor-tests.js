@@ -7,7 +7,7 @@ function runGenericSensorTests(sensorType, verifyReading, readingToArray) {
     let sensor = new sensorType();
     sensor.onchange = t.step_func_done(() => {
       assert_true(verifyReading(sensor));
-      assert_equals(sensor.state, "activated");
+      assert_true(sensor.activated);
       sensor.stop();
     });
     sensor.onerror = t.step_func_done(unreached);
@@ -81,14 +81,14 @@ function runGenericSensorTests(sensorType, verifyReading, readingToArray) {
   test(() => {
     let sensor = new sensorType();
     sensor.onerror = unreached;
-    assert_equals(sensor.state, "unconnected");
-  }, "default sensor.state is 'unconnected'");
+    assert_false(sensor.activated);
+  }, "default sensor.state is 'idle' not 'activated'");
 
   test(() => {
     let sensor = new sensorType();
     sensor.onerror = unreached;
     sensor.start();
-    assert_equals(sensor.state, "activating");
+    assert_false(sensor.activated);
     sensor.stop();
   }, "sensor.state changes to 'activating' after sensor.start()");
 
@@ -107,7 +107,7 @@ function runGenericSensorTests(sensorType, verifyReading, readingToArray) {
       sensor.onerror = unreached;
       sensor.start();
       sensor.start();
-      assert_equals(sensor.state, "activating");
+      assert_false(sensor.activated);
       sensor.stop();
     } catch (e) {
        assert_unreached(e.name + ": " + e.message);
@@ -119,7 +119,7 @@ function runGenericSensorTests(sensorType, verifyReading, readingToArray) {
     sensor.onerror = unreached;
     sensor.start();
     sensor.stop();
-    assert_equals(sensor.state, "idle");
+    assert_false(sensor.activated);
   }, "sensor.state changes to 'idle' after sensor.stop()");
 
   test(() => {
@@ -138,7 +138,7 @@ function runGenericSensorTests(sensorType, verifyReading, readingToArray) {
       sensor.start();
       sensor.stop();
       sensor.stop();
-      assert_equals(sensor.state, "idle");
+      assert_false(sensor.activated);
     } catch (e) {
        assert_unreached(e.name + ": " + e.message);
     }
@@ -156,7 +156,7 @@ function runGenericSensorOnerror(sensorType) {
     let sensor = new sensorType();
     sensor.onactivate = t.step_func_done(assert_unreached);
     sensor.onerror = t.step_func_done(event => {
-      assert_equals(sensor.state, 'errored');
+      assert_false(sensor.activated);
       assert_equals(event.error.name, 'NotReadableError');
     });
     sensor.start();
