@@ -99,10 +99,6 @@ function assertNFCPushOptionsEqual(provided, received) {
   }
 }
 
-function createNFCPushOptions(target, timeout, ignoreRead) {
-  return { target, timeout, ignoreRead };
-}
-
 function createMessage(records) {
   if (records !== undefined) {
     let message = {};
