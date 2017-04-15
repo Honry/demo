@@ -57,6 +57,14 @@ promise_test(t => {
 }, "Test that nfc watch success if NFC HW is enable.");
 
 promise_test(t => {
+  return navigator.nfc.watch(noop)
+    .then(id => {
+      console.log("id:", id)
+      navigator.nfc.cancelWatch(id);
+    });
+}, "Test that nfc.cancelWatch succeeds if correct watch id is provided.");
+
+promise_test(t => {
   let watchOptions = createNFCWatchOptions(test_message_origin, "json", "application/json", "any");
   return navigator.nfc.watch(noop, watchOptions)
     .then((data) => {
@@ -65,14 +73,6 @@ promise_test(t => {
       assert_greater_than(data, 0, "greater than zero");
     })
 }, "Test NFCWatchOptions value are correctly converted.");
-
-promise_test(t => {
-  return navigator.nfc.watch(noop)
-    .then(id => {
-      console.log("id:", id)
-      navigator.nfc.cancelWatch(id);
-    });
-}, "Test that nfc.cancelWatch succeeds if correct watch id is provided.");
 
 promise_test(t => {
   return navigator.nfc.watch(noop)
