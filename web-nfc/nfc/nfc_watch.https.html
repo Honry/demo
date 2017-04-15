@@ -50,6 +50,7 @@ promise_test(t => {
 promise_test(t => {
   return navigator.nfc.watch(noop).then(result => {
     assert_greater_than(result, 0, "greater than zero");
+    console.log("result:", result)
   }).catch((err) => {
     assert_reject(err);
   })
@@ -61,6 +62,7 @@ promise_test(t => {
     .then((data) => {
       assert_equals(typeof(data), "number");
       assert_greater_than(data, 0, "greater than zero");
+      console.log("data:", data)
     })
 }, "Test NFCWatchOptions value are correctly converted.");
 
@@ -68,6 +70,7 @@ promise_test(t => {
   return navigator.nfc.watch(noop)
     .then(id => {
       navigator.nfc.cancelWatch(id);
+      console.log("id:", id)
     });
 }, "Test that nfc.cancelWatch succeeds if correct watch id is provided.");
 

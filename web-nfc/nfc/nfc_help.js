@@ -25,7 +25,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 'use strict';
-const test_text_data = "Test text data bbb.";
+const test_text_data = "Test text data.";
 const test_text_byte_array = new TextEncoder('utf-8').encode(test_text_data);
 const test_number_data = 42;
 const test_json_data = {level: 1, score: 100, label: 'Game'};
