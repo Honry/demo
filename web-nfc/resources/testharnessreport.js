@@ -297,7 +297,12 @@ var metadata_generator = {
     process: function(tests) {
         for (var index = 0; index < tests.length; index++) {
             var test = tests[index];
-            this.currentMetadata[test.name] = this.extractFromTest(test);
+            if (this.currentMetadata.hasOwnProperty(test.name)) {
+                this.error('Duplicate test name: ' + test.name);
+            }
+            else {
+                this.currentMetadata[test.name] = this.extractFromTest(test);
+            }
         }
 
         this.getCachedMetadata();
