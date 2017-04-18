@@ -80,9 +80,14 @@ function processMessage(message) {
   */  
 
 promise_test(t => {
-  return navigator.nfc.push("test").then(() =>
-    assert_unreached();
-  ) 
+  return navigator.nfc.push("test").then(() => {
+    return navigator.nfc.watch(message => {
+      console.log(message.data)
+    }).then(() => {
+      console.log("----", message.data)
+      assert_unreached();
+    });
+  });
 });
 
 //ArrayBuffer
