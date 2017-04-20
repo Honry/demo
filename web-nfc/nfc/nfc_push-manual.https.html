@@ -81,9 +81,10 @@ function processMessage(message) {
 
 promise_test(t => {
   return navigator.nfc.push("test").then(() => {
-    return navigator.nfc.watch(message => {
-      console.log(message.data)
-    }).then(() => {
+    return navigator.nfc.watch(message => new Promise(resolve => {
+      assert_equals(message.data, "test");
+      console.log(message.data);
+    })).then(() => {
       console.log("----", message.data)
       assert_unreached();
     });

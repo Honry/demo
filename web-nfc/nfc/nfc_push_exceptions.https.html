@@ -91,6 +91,14 @@ promise_test(t => {
 }, "Test that promise is rejected with SyntaxError if NFCMessage is invalid.");
 
 promise_test(t => {
+  return promise_rejects(t, "TypeError", navigator.nfc.push(test_text_data, {target: "invalid"}));
+}, "Test that passing invaild target to nfc.push would raise TypeError.");
+
+promise_test(t => {
+  return promise_rejects(t, "TypeError", navigator.nfc.cancelPush("invalid");
+}, "Test that passing invaild target to nfc.cancelPush would raise TypeError.");
+
+promise_test(t => {
   let promise = navigator.nfc.push(test_text_data);
   navigator.nfc.cancelPush();
   return promise_rejects(t, 'AbortError', promise);
