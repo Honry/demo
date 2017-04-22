@@ -95,7 +95,7 @@ promise_test(t => {
 }, "Test that passing invaild target to nfc.push would raise TypeError.");
 
 promise_test(t => {
-  return promise_rejects(t, new TypeError(), navigator.nfc.cancelPush("invalid");
+  return promise_rejects(t, new TypeError(), navigator.nfc.cancelPush("invalid"));
 }, "Test that passing invaild target to nfc.cancelPush would raise TypeError.");
 
 promise_test(t => {
