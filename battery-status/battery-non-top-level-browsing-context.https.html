@@ -12,7 +12,7 @@
 async_test(t => {
   var iframe = document.querySelector('#blank');
   iframe.onload = t.step_func(() => {
-    assert_throws('SecurityError', () => { iframe.contentWindow.navigator.getBattery() });
+    assert_throws('SecurityError', () => { iframe.contentWindow.navigator.getBattery().catch((e) => console.log(e))});
     t.done();
   });
   iframe.src = 'support-iframe.html';
