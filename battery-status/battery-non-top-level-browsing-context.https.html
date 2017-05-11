@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Battery Test: navigator.getBattery() is not allowed in non top-level browsing context</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://www.w3.org/TR/battery-status/">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<div id="log"></div>
+<iframe id="blank" src="about:blank" style="display: none"></iframe>
+<script>
+
+async_test(t => {
+  var iframe = document.querySelector('#blank');
+  iframe.onload = t.step_func(() => {
+    assert_throws('SecurityError', return iframe.contentWindow.navigator.getBattery());
+    t.done();
+  });
+  iframe.src = 'support-iframe.html';
+}, "throw a 'SecurityError' when calling navigator.getBattery() within iframes");
+
+</script>
