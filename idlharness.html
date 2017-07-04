@@ -59,7 +59,7 @@ dictionary SensorErrorEventInit : EventInit {
   idl_array.add_idls(document.getElementById('generic-idl').textContent);
 
   idl_array.add_objects({
-    SensorErrorEvent: ['new SensorErrorEvent({ error: new TypeError("Boom!") });']
+    SensorErrorEvent: ['new SensorErrorEvent("SECURITY_ERR", { errorCode: 18 });']
   });
 
   idl_array.test();
