@@ -26,77 +26,28 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <meta charset=utf-8>
-<title>Web NFC: Test exceptions in nfc.push</title>
+<title>Web NFC Test: push NFCMessage with 'empty' recordType</title>
 <link rel="author" title="Intel" href="http://www.intel.com"/>
-<link rel="author" title="Zhao Ming" href="mailto:mingx.zhao@intel.com"/>
+<link rel="author" title="Wanming Lin" href="mailto:wanming.lin@intel.com"/>
 <link rel="help" href="https://w3c.github.io/web-nfc/#the-nfc-interface"/>
 <script src="../resources/testharness.js"></script>
 <script src="../resources/testharnessreport.js"></script>
 <script src="nfc_help.js"></script>
+<meta name="flags" content="interact">
+<meta name="timeout" content="long">
+
+<p>Tap an NFC tag to the test device with NFC support.</p>
+
+<p>Note: All the actions need to be done in 60 seconds, otherwise it will get TIMEOUT.</p>
 
 <div id="log"></div>
 
 <script>
+
 "use strict";
-//DomString
-/*
-navigator.nfc.push("haha").then(() => {
-  navigator.nfc.watch((message) => {
-    console.log('Read message written by ' + message.data[0].data);
-    processMessage(message);
-  }).then(() => {
-    console.log("Added a watch.");
-  }).catch((error) => {
-  console.log("Adding watch failed: " + error.name);
-  });
-}).catch((error) => {
-  console.log("Push failed: " + error.name);
-});
 
-function processMessage(message) {
-  for (let record of message.data) {
-    switch (record.recordType) {
-      case "text":
-        console.log('Data is text: ' + record.data);
-        break;
-      case "url":
-        console.log('Data is URL: ' + record.data);
-        break;
-      case "json":
-        console.log('JSON data: ' + record.data.myProperty.toString());
-        break;
-      case "opaque":
-        if (record.mediaType == 'image/png') {
-          var img = document.createElement("img");
-          img.src = URL.createObjectURL(new Blob(record.data, record.mediaType));
-          img.onload = function() {
-            window.URL.revokeObjectURL(this.src);
-          };
-        }
-        break;
-    }
-  }
-}
-  */  
+setup({ explicit_timeout: true });
 
-promise_test(t => {
-  return navigator.nfc.push("test").then(() => {
-    return navigator.nfc.watch(message => new Promise(resolve => {
-      assert_equals(message.data, "test");
-      console.log(message.data);
-    })).then(() => {
-      console.log("----", message.data)
-      assert_unreached();
-    });
-  });
-});
+testNFCMessage(createEmptyRecord(),  "Test that nfc.push succeeds with empty NFC records.");
 
-//ArrayBuffer
-
-
-
-//NFCMessage
-
-
-//nfc.push target invalid
 </script>

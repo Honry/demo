@@ -26,7 +26,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <meta charset=utf-8>
-<title>Web NFC Test: HW NotSupportedError</title>
+<title>Web NFC Test: watch with 'text' recordType</title>
 <link rel="author" title="Intel" href="http://www.intel.com"/>
 <link rel="author" title="Zhao Ming" href="mailto:mingx.zhao@intel.com"/>
 <link rel="help" href="https://w3c.github.io/web-nfc/#the-nfc-interface"/>
@@ -34,26 +34,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <script src="../resources/testharnessreport.js"></script>
 <script src="nfc_help.js"></script>
 <meta name="flags" content="interact">
+<meta name="timeout" content="long">
+
+<p>Tap an NFC tag to the test device with NFC support.</p>
+
+<p>Note: All the actions need to be done in 60 seconds, otherwise it will get TIMEOUT.</p>
 
 <div id="log"></div>
-
-<h2>Precondition</h2>
-<ol>
-  <li>
-    Test on a device without NFC HW.
-  </li>
-</ol>
 
 <script>
 
 "use strict";
 
-promise_test(t => {
-  return promise_rejects(t, "NotSupportedError", navigator.nfc.watch(noop));
-}, "Test that nfc.watch should fail when NFC HW is not supported.");
+setup({ explicit_timeout: true });
 
-promise_test(t => {
-  return promise_rejects(t, "NotSupportedError", navigator.nfc.push(test_text_data));
-}, "Test that nfc.push should fail when NFC HW is not supported.");
- 
+let watchOptions = {
+  recordType : "text",
+  mediaType : "text/plain",
+  url : ""
+}
+testNFCMessage(createTextRecord(test_text_data), "Test that nfc.watch succeeds when NFCWatchOptions recordType is set to 'text'.",  watchOptions);
+
 </script>

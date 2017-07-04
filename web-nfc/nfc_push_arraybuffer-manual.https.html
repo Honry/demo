@@ -26,7 +26,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <meta charset=utf-8>
-<title>Web NFC Test: insecure context</title>
+<title>Web NFC Test: push ArrayBuffer message</title>
 <link rel="author" title="Intel" href="http://www.intel.com"/>
 <link rel="author" title="Zhao Ming" href="mailto:mingx.zhao@intel.com"/>
 <link rel="help" href="https://w3c.github.io/web-nfc/#the-nfc-interface"/>
@@ -34,33 +34,35 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <script src="../resources/testharnessreport.js"></script>
 <script src="nfc_help.js"></script>
 <meta name="flags" content="interact">
+<meta name="timeout" content="long">
 
-<h2>Precondition</h2>
-<ol>
-  <li>
-    Run test is an insecure context, e.g. http://example.com/
-  </li>
-</ol>
+<p>Tap an NFC tag to the test device with NFC support.</p>
+
+<p>Note: All the actions need to be done in 60 seconds, otherwise it will get TIMEOUT.</p>
 
 <div id="log"></div>
 
 <script>
 
 "use strict";
-promise_test(t => {
-  return promise_rejects(t, 'SecurityError', navigator.nfc.push(test_text_data));
-}, "nfc.push should fail with SecurityError in a secure context.");
+
+setup({ explicit_timeout: true });
 
 promise_test(t => {
-  return promise_rejects(t, 'SecurityError', navigator.nfc.cancelPush());
-}, "nfc.cancelPush should fail with SecurityError in a secure context.");
-
-promise_test(t => {
-  return promise_rejects(t, 'SecurityError', navigator.nfc.watch(noop));
-}, "nfc.watch should fail with SecurityError in a secure context.");
-
-promise_test(t => {
-  return promise_rejects(t, 'SecurityError', navigator.nfc.cancelWatch());
-}, "nfc.cancelWatch should fail with SecurityError in a secure context.");
+  return navigator.nfc.push(test_buffer_data)
+    .then(() => {
+      return new Promise(resolve => {
+        navigator.nfc.watch(message => resolve(message))
+      }).then((message) => {
+        for (let record of message.records) {
+          assert_equals(record.recordType, "opaque");
+          assert_equals(record.mediaType, "application/octet-stream");
+          for (let i= 0; i<= record.data.byteLength; i++) {
+            assert_equals(record.data[i], test_buffer_data[i]);
+          }
+        }
+      });
+    });
+}, "Test that nfc.push succeeds when message is ArrayBuffer.");
 
 </script>

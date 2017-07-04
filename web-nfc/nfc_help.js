@@ -30,7 +30,6 @@ const test_text_byte_array = new TextEncoder('utf-8').encode(test_text_data);
 const test_number_data = 42;
 const test_json_data = {level: 1, score: 100, label: 'Game'};
 const test_url_data = "https://w3c.github.io/web-nfc";
-const test_message_origin = "https://127.0.0.1:8443";
 const test_buffer_data = new ArrayBuffer(test_text_byte_array.length);
 const test_buffer_view = new Uint8Array(test_buffer_data).set(test_text_byte_array);
 
@@ -42,6 +41,7 @@ function toNFCWatchMode(mode) {
   }
   return nfc.NFCWatchMode.ANY;
 }
+
 function toNFCRecordType(type) {
   switch (type) {
     case 'text':
@@ -59,20 +59,21 @@ function toNFCRecordType(type) {
 function createNFCWatchOptions(url, recordType, mediaType, mode) {
   return {url, recordType, mediaType, mode}
 }
+
 function assertNFCWatchOptionsEqual(provided, received) {
   if (provided.url !== undefined) {
     assert_equals(provided.url, received.url);
-  }else{
+  } else {
     assert_equals(received.url, '');
   }
   if (provided.mediaType !== undefined) {
     assert.equals(provided.mediaType, received.media_type);
-  }else{
+  } else {
     assert.equals(received.media_type, '');
   }
   if (provided.mode !== undefined) {
     assert_equals(toNFCWatchMode(provided.mode), received.mode);
-  }else{
+  } else {
     assert_equals(received.mode, nfc.NFCWatchMode.WEBNFC_ONLY);
   }
   if (provided.recordType !== undefined) {
@@ -84,17 +85,17 @@ function assertNFCWatchOptionsEqual(provided, received) {
 function assertNFCPushOptionsEqual(provided, received) {
   if (provided.ignoreRead !== undefined) {
     assert_equals(provided.ignoreRead, !!+received.ignore_read);
-  }else{
+  } else {
     assert_equals(!!+received.ignore_read, true);
   }
   if (provided.timeout !== undefined) {
     assert_equals(provided.timeout, received.timeout);
-  }else{
+  } else {
     assert_equals(received.timeout, Infinity);
   }
   if (provided.target !== undefined) {
     assert_equals(toMojoNFCPushTarget(provided.target), received.target);
-  }else{
+  } else {
     assert_equals(received.target, nfc.NFCPushTarget.ANY);
   }
 }
@@ -102,7 +103,7 @@ function assertNFCPushOptionsEqual(provided, received) {
 function createMessage(records) {
   if (records !== undefined) {
     let message = {};
-    message.data = records;
+    message.records = records;
     return message;
   }
 }
@@ -134,5 +135,55 @@ function createOpaqueRecord(buffer) {
 }
 
 function createUrlRecord(url) {
-  return createRecord("url", "text/plain", url);
+  return createRecord('url', 'text/plain', url);
+}
+
+function createEmptyRecord() {
+  return createRecord('empty', '', null);
+}
+
+function testNFCMessage(pushMessage, desc, watchOptions) {
+  promise_test(t => {
+    return navigator.nfc.push({records:[{data: pushMessage.data, recordType: pushMessage.recordType, mediaType: pushMessage.mediaType}]})
+      .then(() => {
+        return new Promise(resolve => {
+          if (watchOptions !== null && watchOptions !== undefined) {
+            navigator.nfc.watch((message) => resolve(message), watchOptions);
+          } else {
+            navigator.nfc.watch((message) => resolve(message));
+          }
+        }).then((message) => {
+          for (let record of message.records) {
+            assert_equals(record.recordType, pushMessage.recordType);
+            assert_equals(record.mediaType, pushMessage.mediaType);
+            switch (record.recordType) {
+              case "empty":
+                assert_equals(record.data, undefined);
+                break;
+              case "text":
+              case "url":
+                assert_equals(record.data, pushMessage.data);
+                break;
+              case "json":
+                for (let prop in record.data) {
+                  if (record.data[prop] instanceof Array) {
+                    assert_array_equals(record.data[prop], pushMessage.data[prop]);
+                  } else {
+                    assert_equals(record.data[prop], pushMessage.data[prop]);
+                  }
+                }
+                break;
+              case "opaque":
+                for (let i= 0; i<= record.data.byteLength; i++) {
+                  assert_equals(record.data[i], pushMessage.data[i]);
+                }
+                break;
+              default:
+                assert_unreached("Invalid RecordType");
+                break;
+            }
+          }
+        });
+      });
+  }, desc);
 }

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2017 Intel Corporation.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+* Redistributions of works must retain the original copyright notice, this list
+  of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the original copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+* Neither the name of Intel Corporation nor the names of its contributors
+  may be used to endorse or promote products derived from this work without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY INTEL CORPORATION "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL INTEL CORPORATION BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<meta charset=utf-8>
+<title>Web NFC: nfc.watch tests</title>
+<link rel="author" title="Intel" href="http://www.intel.com"/>
+<link rel="author" title="Zhao Ming" href="mailto:mingx.zhao@intel.com"/>
+<link rel="help" href="https://w3c.github.io/web-nfc/#the-nfc-interface"/>
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<script src="nfc_help.js"></script>
+
+<div id="log"></div>
+
+<script>
+"use strict";
+
+promise_test(t => {
+  return promise_rejects(t, "NotFoundError", navigator.nfc.cancelWatch(1));
+}, "Test that nfc.cancelWatch fails if invalid watch ID is provided.");
+
+promise_test(t => {
+  return promise_rejects(t, "NotFoundError", navigator.nfc.cancelWatch());
+}, "Test that nfc.cancelWatch fails if there are no active watchers.");
+
+promise_test(t => {
+  return navigator.nfc.watch(noop).then(id => {
+    assert_equals(typeof(id), "number");
+    assert_greater_than(id, 0, "greater than zero");
+  });
+}, "Test that nfc watch success if NFC HW is enable.");
+
+promise_test(t => {
+  return navigator.nfc.watch(noop).
+      then(id => navigator.nfc.cancelWatch(id));
+}, "Test that nfc.cancelWatch succeeds if correct watch id is provided.");
+
+promise_test(t => {
+  return navigator.nfc.watch(noop).then(() => {
+    navigator.nfc.cancelWatch();
+  });
+}, "Test that nfc.cancelWatch succeeds if there are active watchers.");
+
+promise_test(t => {
+  return promise_rejects(t, "SyntaxError", navigator.nfc.watch(noop, {url:"www.a.com"}));
+}, 'Test that nfc.watch fails if NFCWatchOptions.url is missing components.');
+
+promise_test(t => {
+  return promise_rejects(t, "SyntaxError", navigator.nfc.watch(noop, {url:"invalid"}));
+}, 'Test that nfc.watch fails if NFCWatchOptions.url is invalid.');
+
+promise_test(t => {
+  return promise_rejects(t, "SyntaxError", navigator.nfc.watch(noop, {url:"http://a.com"}));
+}, 'Test that nfc.watch fails if NFCWatchOptions.url has wrong protocol.');
+
+promise_test(t => {
+  return navigator.nfc.watch(noop, {url:"https://a.com"});
+}, 'Test that nfc.watch succeeds if NFCWatchOptions.url is valid URL.');
+
+promise_test(t => {
+  return navigator.nfc.watch(noop, {url:"https://a.com/*"});
+}, 'Test that nfc.watch succeeds if NFCWatchOptions.url is valid URL with "*"' +
+   ' wildcard character in path.');
+
+promise_test(t => {
+  return navigator.nfc.watch(noop, {url:"https://a.com/*/bar"});
+}, 'Test that nfc.watch succeeds if NFCWatchOptions.url is valid URL with "*"' +
+   ' wildcard character in the beginning of path component followed by' +
+   ' subpath.');
+
+promise_test(t => {
+  return navigator.nfc.watch(noop, {url:""});
+}, 'Test that nfc.watch succeeds if NFCWatchOptions.url is empty.');
+</script>

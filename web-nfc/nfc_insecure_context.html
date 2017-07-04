@@ -26,7 +26,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <meta charset=utf-8>
-<title>Web NFC: nfc.watch tests</title>
+<title>Web NFC Test: insecure context</title>
 <link rel="author" title="Intel" href="http://www.intel.com"/>
 <link rel="author" title="Zhao Ming" href="mailto:mingx.zhao@intel.com"/>
 <link rel="help" href="https://w3c.github.io/web-nfc/#the-nfc-interface"/>
@@ -34,36 +34,32 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <script src="../resources/testharnessreport.js"></script>
 <script src="nfc_help.js"></script>
 
+<h2>Precondition</h2>
+<ol>
+  <li>
+    Run test is an insecure context, e.g. http://example.com/
+  </li>
+</ol>
+
 <div id="log"></div>
 
 <script>
+
 "use strict";
+promise_test(t => {
+  return promise_rejects(t, 'SecurityError', navigator.nfc.push(test_text_data));
+}, "nfc.push should fail with SecurityError in a secure context.");
 
 promise_test(t => {
-  return promise_rejects(t, "NotFoundError", navigator.nfc.cancelWatch(1));
-}, "Test that nfc.cancelWatch fails if invalid watch ID is provided.");
+  return promise_rejects(t, 'SecurityError', navigator.nfc.cancelPush());
+}, "nfc.cancelPush should fail with SecurityError in a secure context.");
 
 promise_test(t => {
-  return promise_rejects(t, "NotFoundError", navigator.nfc.cancelWatch());
-}, "Test that nfc.cancelWatch fails if there are no active watchers.");
+  return promise_rejects(t, 'SecurityError', navigator.nfc.watch(noop));
+}, "nfc.watch should fail with SecurityError in a secure context.");
 
 promise_test(t => {
-  return navigator.nfc.watch(noop).then(id => {
-    assert_equals(typeof(id), "number");
-    assert_greater_than(id, 0, "greater than zero");
-  });
-}, "Test that nfc watch success if NFC HW is enable.");
-
-promise_test(t => {
-  return navigator.nfc.watch(noop).then(id => {
-    navigator.nfc.cancelWatch(id);
-  });
-}, "Test that nfc.cancelWatch succeeds if correct watch id is provided.");
-
-promise_test(t => {
-  return navigator.nfc.watch(noop).then(() => {
-    navigator.nfc.cancelWatch();
-  });
-}, "Test that nfc.cancelWatch succeeds if there are active watchers.");
+  return promise_rejects(t, 'SecurityError', navigator.nfc.cancelWatch());
+}, "nfc.cancelWatch should fail with SecurityError in a secure context.");
 
 </script>
