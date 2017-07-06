@@ -32,44 +32,6 @@ function reading_to_array(sensor) {
   return arr;
 }
 
-function load_iframe(src) {
-  return new Promise(resolve => {
-    const iframe = document.createElement("iframe");
-    iframe.onload = () => { resolve(iframe); };
-    iframe.srcdoc = src;
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
-  });
-}
-
-function wait_for_message(iframe) {
-  return new Promise(resolve => {
-    self.addEventListener("message", function listener(e) {
-      console.log("message received from iframe");
-      if (e.source === iframe.contentWindow) {
-        console.log("resolve wait for message");
-        resolve(e.data);
-        self.removeEventListener("message", listener);
-      }
-    });
-  });
-}
-
-function try_to_create_sensor(sensorType) {
-  return '<script>' +
-         '  window.onmessage = () => {' +
-         '    try {' +
-         '      let sensor = new ' + sensorType.name + '();' +
-         '      console.log("no exception");' +
-         '      parent.postMessage( {result: "No error"} , "*");' +
-         '    } catch (e) {' +
-         '      console.log("exception: ", e); ' +
-         '      parent.postMessage( {result: e.name} , "*");' +
-         '    }' +
-         '  };' +
-         '<\/script>';
-}
-
 function runGenericSensorTests(sensorType) {
   async_test(t => {
     let sensor = new sensorType();
@@ -179,17 +141,32 @@ function runGenericSensorTests(sensorType) {
     }
   }, "no exception is thrown when calling stop() on already stopped sensor");
 
-  promise_test(t => {
-    return load_iframe(try_to_create_sensor(sensorType))
-      .then(iframe => {
-        iframe.contentWindow.postMessage({}, '*');
-        console.log("post message to iframe")
-        return wait_for_message(iframe);
-      })
-      .then(message => {
-        assert_equals(message.result, 'SecurityError');
-      });
-  }, "throw a 'SecurityError' when firing sensor readings within iframes");
+  promise_test(() => {
+    return new Promise((resolve,reject) => {
+      let iframe = document.createElement('iframe');
+      iframe.srcdoc = '<script>' +
+                      '  window.onmessage = message => {' +
+                      '    if (message.data === "LOADED") {' +
+                      '      try {' +
+                      '        new ' + sensorType.name + '();' +
+                      '        parent.postMessage("FAIL", "*");' +
+                      '      } catch (e) {' +
+                      '        parent.postMessage(e.name, "*");' +
+                      '      }' +
+                      '    }' +
+                      '   };' +
+                      '<\/script>';
+      iframe.onload = () => iframe.contentWindow.postMessage('LOADED', '*');
+      document.body.appendChild(iframe);
+      window.onmessage = message => {
+        if (message.data == 'SecurityError') {
+          resolve();
+        } else {
+          reject();
+        }
+      }
+    });
+  }, "throw a 'SecurityError' when constructing sensor object within iframe");
 
   async_test(t => {
     let sensor = new sensorType();
