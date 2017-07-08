@@ -14,19 +14,19 @@
 "use strict";
 
 promise_test(t => {
-  return navigator.nfc.watch(noop).then(id => {
-    assert_equals(typeof(id), "number");
-    assert_greater_than(id, 0, "greater than zero");
-  });
-}, "Test that nfc watch success if NFC HW is enable.");
-
-promise_test(t => {
   return promise_rejects(t, 'NotFoundError', navigator.nfc.cancelWatch(1));
 }, "Test that nfc.cancelWatch fails if invalid watch ID is provided.");
 
 promise_test(t => {
   return promise_rejects(t, 'NotFoundError', navigator.nfc.cancelWatch());
 }, "Test that nfc.cancelWatch fails if there are no active watchers.");
+
+promise_test(t => {
+  return navigator.nfc.watch(noop).then(id => {
+    assert_equals(typeof(id), "number");
+    assert_greater_than(id, 0, "greater than zero");
+  });
+}, "Test that nfc watch success if NFC HW is enable.");
 
 promise_test(t => {
   return navigator.nfc.watch(noop).

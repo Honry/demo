@@ -47,12 +47,7 @@ function createUrlRecord(url) {
   return createRecord('url', 'text/plain', url);
 }
 
-function createEmptyRecord() {
-  return createRecord('empty', '', null);
-}
-
 function assertWebNFCMessagesEqual(a, b) {
-  assert_equals(a.url, b.url);
   assert_equals(a.records.length, b.records.length);
   for(let i in a.records) {
     let recordA = a.records[i];
@@ -72,47 +67,14 @@ function assertWebNFCMessagesEqual(a, b) {
   }
 }
 
-function testNFCMessage(pushMessage, desc, watchOptions) {
+function testNFCMessage(pushedMessage, watchOptions, desc) {
   promise_test(t => {
-    return navigator.nfc.push({records:[{data: pushMessage.data, recordType: pushMessage.recordType, mediaType: pushMessage.mediaType}]})
+    return navigator.nfc.push(pushedMessage)
       .then(() => {
         return new Promise(resolve => {
-          if (watchOptions !== null && watchOptions !== undefined) {
-            navigator.nfc.watch((message) => resolve(message), watchOptions);
-          } else {
-            navigator.nfc.watch((message) => resolve(message));
-          }
+          navigator.nfc.watch((message) => resolve(message), watchOptions);
         }).then((message) => {
-          for(let record of message.records) {
-            assert_equals(record.recordType, pushMessage.recordType);
-            assert_equals(record.mediaType, pushMessage.mediaType);
-            switch (record.recordType) {
-              case "empty":
-                assert_equals(record.data, undefined);
-                break;
-              case "text":
-              case "url":
-                assert_equals(record.data, pushMessage.data);
-                break;
-              case "json":
-                for (let prop in record.data) {
-                  if (record.data[prop] instanceof Array) {
-                    assert_array_equals(record.data[prop], pushMessage.data[prop]);
-                  } else {
-                    assert_equals(record.data[prop], pushMessage.data[prop]);
-                  }
-                }
-                break;
-              case "opaque":
-                for (let i= 0; i<= record.data.byteLength; i++) {
-                  assert_equals(record.data[i], pushMessage.data[i]);
-                }
-                break;
-              default:
-                assert_unreached("Invalid RecordType");
-                break;
-            }
-          }
+          assertWebNFCMessagesEqual(message, pushedMessage);
         });
       });
   }, desc);

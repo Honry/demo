@@ -14,7 +14,7 @@
 
 async_test( t => {
   let iframe = document.createElement('iframe');
-  iframe.src = 'push-from-iframe.html';
+  iframe.src = 'resources/push-from-iframe.html';
   iframe.onload = () => {
     iframe.contentWindow.postMessage('Ready', '*');
   };

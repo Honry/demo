@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <meta charset=utf-8>
-<title>Web NFC Test: push ArrayBuffer message</title>
+<title>Web NFC Test: push DOMString message</title>
 <link rel="author" title="Intel" href="http://www.intel.com"/>
-<link rel="author" title="Zhao Ming" href="mailto:mingx.zhao@intel.com"/>
-<link rel="help" href="https://w3c.github.io/web-nfc/#the-nfc-interface"/>
+<link rel="help" href="https://w3c.github.io/web-nfc/"/>
 <script src="../resources/testharness.js"></script>
 <script src="../resources/testharnessreport.js"></script>
-<script src="nfc_help.js"></script>
+<script src="resources/nfc_help.js"></script>
 <meta name="flags" content="interact">
 <meta name="timeout" content="long">
 
@@ -23,23 +22,16 @@
 setup({ explicit_timeout: true });
 
 promise_test(t => {
-  return navigator.nfc.push(test_buffer_data)
+  return navigator.nfc.push(test_text_data)
     .then(() => {
       return new Promise(resolve => {
         navigator.nfc.watch(message => resolve(message))
       }).then((message) => {
         for (let record of message.records) {
-          assert_equals(record.recordType, "opaque");
-          assert_equals(record.mediaType, "application/octet-stream");
-          for (let i= 0; i<= record.data.byteLength; i++) {
-            assert_equals(record.data[i], test_buffer_data[i]);
-          }
+          assert_equals(record.data, test_text_data);
         }
       });
     });
-}, "Test that nfc.push succeeds when message is ArrayBuffer.");
+}, "Test that nfc.push succeeds when message is DOMString.");
 
 </script>
-
-          assert_array_equals(new Uint8Array(recordA.data),
-              new Uint8Array(recordB.data));
