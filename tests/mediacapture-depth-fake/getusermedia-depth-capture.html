@@ -375,7 +375,8 @@
                             tex, 0);
     gl.texImage2D(gl.TEXTURE_2D, 0, internalformat, video.width, video.height,
                   0, format, type, null);
-    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, format, type, video);
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, video.width,
+                    video.height, format, type, video);
     return tex;
   }
   function uploadVideoToTextureCubemap(gl, video, internalformat, format, type,
@@ -395,7 +396,8 @@
     for (var i = 0; i < cubemapFaces(gl).length; ++i) {
       gl.texImage2D(cubemapFaces(gl)[i], 0, internalformat, video.width,
                     video.height, 0, format, type, null);
-      gl.texSubImage2D(cubemapFaces(gl)[i], 0, 0, 0, format, type, video);
+      gl.texSubImage2D(cubemapFaces(gl)[i], 0, video.width,
+                    video.height, format, type, video);
     }
     return tex;
   }

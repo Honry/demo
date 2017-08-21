@@ -19,7 +19,7 @@ function getConstraintsForDevice(deviceLabel) {
 }
 function getFake16bitStream() {
   return new Promise(function(resolve, reject) {
-    getConstraintsForDevice("fake_device_1")
+    getConstraintsForDevice("Intel(R) RealSense(TM) 430 with RGB Module Depth (8086:0b07)")
     .then(function(constraints) {
       if (!constraints)
         return reject("No fake device found");
