@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>getUserMedia depth capture test</title>
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<script src="./resources/mediacapture-depth-tests.js"></script>
+<div id="log"></div>
+
+<script>
+
+function main() {
+  let devices = ["Intel(R) RealSense(TM) Camera SR300 Depth (8086:0aa5)"];
+  let color_device = "Intel(R) RealSense(TM) Camera SR300 RGB (8086:0aa5)";
+  for (let i in devices) {
+    depthStreamToRGBAUint8Texture(devices[i]);
+    depthStreamToRGBAFloatTexture(devices[i]);
+    depthStreamToR32FloatTexture(devices[i]);
+    getDepthStreamAndCallCreateImageBitmap(devices[i]);
+    getDepthStreamAndCameraCalibration(devices[i]);
+    getBothStreamsAndCheckForFeaturesPresence(devices[i], color_device);
+  }
+}
+main();
+
+</script>

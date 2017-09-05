@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Adding a track to an inactive MediaStream</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/#dom-mediastream-addtrack">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<meta name="flags" content="interact">
+
+<h2>Preconditions</h2>
+<ol>
+  <li>
+    Use a test device with depth camera(embedded or external) and an audio device.
+  </li>
+  <li>
+    When prompted, accept to share your audio and depth streams.
+  </li>
+</ol>
+
+<div id="log"></div>
+
+<script>
+
+promise_test(t => {
+  let audio, video;
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}})
+  .then(video_stream => {
+
+    video = video_stream;
+    return navigator.mediaDevices.getUserMedia({audio:true})
+    .then(audio_stream => {
+
+      audio = audio_stream;
+      audio.getAudioTracks()[0].stop();
+      assert_false(audio.active, "audio stream is inactive after stopping its only audio track");
+      assert_true(video.active, "video stream is active");
+      audio.addTrack(video.getVideoTracks()[0]);
+      audio.removeTrack(audio.getAudioTracks()[0]);
+    });
+  });
+}, "Tests that adding a track to an inactive MediaStream is allowed", {timeout: 20000});
+
+</script>

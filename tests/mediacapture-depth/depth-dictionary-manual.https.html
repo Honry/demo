@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Media Capture Depth Dictionary Test</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-depth/#mediatracksupportedconstraints-dictionary">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<script src="./dictionary-helper.js"></script>
+<script src="./depth-dictionary-helper.js"></script>
+<meta name="flags" content="interact">
+
+<h2>Preconditions</h2>
+<ol>
+  <li>
+    Use a test device with depth camera(embedded or external).
+  </li>
+  <li>
+    When prompted, <strong>please deny</strong> access to the video stream.
+  </li>
+</ol>
+
+<div id="log"></div>
+
+<script>
+
+test(() => {
+  let supports = navigator.mediaDevices.getSupportedConstraints();
+  validateMediaTrackSupportedConstraints(supports);
+}, "MediaTrackSupportedConstraints dictionary include attributes are correct");
+
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}})
+  .then(stream => {
+    let capabilities = stream.getTracks()[0].getCapabilities();
+    validateMediaTrackCapabilities(capabilities);
+  });
+}, "MediaTrackCapabilities dictionary include attributes are correct");
+
+let advanced_constraints = [{
+  videoKind: "depth",
+  focalLengthX: 680,
+  focalLengthY: 680,
+  principalPointX: 680,
+  principalPointY: 680,
+  deprojectionDistortionCoefficients: {k1: 1, k2: 1, p1: 1, p2: 1, k3: 1},
+  projectionDistortionCoefficients: {k1: 1, k2: 1, p1: 1, p2: 1, k3: 1},
+  depthNear: 0.1,
+  depthFar: 5,
+  depthToVideoTransform: true
+}];
+
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {advanced: advanced_constraints}})
+  .then(stream => {
+    let constraints = stream.getTracks()[0].getConstraints()["advanced"][0];
+    validateMediaTrackConstraintSet(constraints);
+  });
+}, "MediaTrackConstraintSet dictionary include attributes are correct");
+
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}})
+  .then(stream => {
+    let settings = stream.getTracks()[0].getSettings();
+    validateMediaTrackSettings(settings);
+  });
+}, "MediaTrackSettings dictionary include attributes are correct");
+
+</script>

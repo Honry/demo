@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>getUserMedia() triggers promise rejected when auth is denied</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/#methods-5">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<meta name="flags" content="interact">
+
+<h2>Preconditions</h2>
+<ol>
+  <li>
+    Use a test device with depth camera(embedded or external).
+  </li>
+  <li>
+    When prompted, <strong>please deny</strong> access to the video stream.
+  </li>
+</ol>
+
+<div id="log"></div>
+
+<script>
+
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}})
+  .then(stream => {
+    assert_unreached("The promise resolved should not be triggered since access is to be denied");
+  })
+  .catch(error => {
+    assert_equals(error.name, "NotAllowedError", "NotAllowedError returned");
+    assert_equals(error.constraintName, undefined, "constraintName attribute not set as expected");
+  });
+}, "Tests that return a promise rejected with a DOMException object whose name attribute has the value NotAllowedError when permission is denied");
+
+</script>
