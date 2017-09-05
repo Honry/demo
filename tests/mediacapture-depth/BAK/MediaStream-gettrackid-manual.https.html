@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Retrieving a track from a MediaStream</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/#dom-mediastream-gettrackbyid">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<meta name="flags" content="interact">
+
+<h2>Preconditions</h2>
+<ol>
+  <li>
+    Use a test device with depth camera(embedded or external).
+  </li>
+  <li>
+    When prompted, accept to share your depth stream.
+  </li>
+</ol>
+
+<div id="log"></div>
+
+<script>
+
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}})
+  .then(stream => {
+    let track = stream.getVideoTracks()[0];
+    assert_equals(track, stream.getTrackById(track.id), "getTrackById returns track of given id");
+    assert_equals(stream.getTrackById(track.id + "foo"), null, "getTrackById of inexistant id  returns null");
+  });
+}, "Tests that MediaStream.getTrackById works as expected");
+
+</script>
