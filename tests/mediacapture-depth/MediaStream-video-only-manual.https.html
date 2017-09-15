@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>getUserMedia({video: {videoKind: {exact: "depth"}}}) creates a stream with at least an video track</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/#dom-mediastream-getvideotracks">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<meta name="flags" content="interact">
+
+<h2>Preconditions</h2>
+<ol>
+  <li>
+    Use a test device with depth camera(embedded or external).
+  </li>
+  <li>
+    When prompted, accept to share your depth stream.
+  </li>
+</ol>
+
+<div id="log"></div>
+
+<script>
+
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}})
+  .then(stream => {
+    assert_true(stream instanceof MediaStream, "getUserMedia success callback comes with a MediaStream object");
+    assert_equals(stream.getVideoTracks().length, 1, "the media stream has exactly one audivideoo track");
+    assert_equals(stream.getVideoTracks()[0].kind, "video", "getVideoTracks() returns a sequence of tracks whose kind is 'video'");
+    assert_equals(stream.getAudioTracks().length, 0, "the media stream has zero audio track");
+  });
+}, "Tests that a MediaStream with exactly one video track is returned", {timeout: 10000});
+
+</script>

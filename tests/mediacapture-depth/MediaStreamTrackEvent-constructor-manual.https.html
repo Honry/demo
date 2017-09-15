@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>MediaStreamTrackEvent constructor</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/#mediastreamtrackevent">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<meta name="flags" content="interact">
+
+<h2>Preconditions</h2>
+<ol>
+  <li>
+    Use a test device with depth camera(embedded or external).
+  </li>
+  <li>
+    When prompted, accept to share your depth stream.
+  </li>
+</ol>
+
+<div id="log"></div>
+
+<script>
+
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}})
+  .then(stream => {
+    let track = stream.getTracks()[0];
+    assert_true(track instanceof MediaStreamTrack);
+    let event = new MediaStreamTrackEvent("type", { track: track });
+    assert_equals(event.type, "type");
+    assert_equals(event.track, track);
+  });
+}, "The MediaStreamTrackEvent instance's track attribute is set");
+
+</script>
