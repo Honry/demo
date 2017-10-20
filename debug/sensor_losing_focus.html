@@ -10,28 +10,6 @@ runLosingFocusTest(Accelerometer);
 //runGenericSensorTests(AmbientLightSensor);
 //checkFrequencyHintWorks(Accelerometer);
 
-/*
-    const iframe_src = 'data:text/html;charset=utf-8,<html><body>'
-                      + '<input type="text" autofocus></body></html>';
-    let iframe = document.createElement("iframe");
-    iframe.src = encodeURI(iframe_src);
-    let i = 0;
-    window.onload =() => {
-    i++;
-    iframe.onload =() => {
-      console.log(document.activeElement);
-      window.onfocus = () =>{
-      console.log("focused: ", document.activeElement);
-      }
-//      iframe.blur();
-      //document.body.focus();
-setTimeout(()=>{document.getElementById("a").focus();}, 100)
-    }
-    document.body.appendChild(iframe);
-    console.log(document.activeElement);
-    console.log(i);
-    }
-
 
 /**
 let sensor = new Accelerometer();
