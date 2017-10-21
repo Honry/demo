@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<title>Tests various ways to call cancelWatchAvailability()</title>
+<!--<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
+<script src="/common/media.js"></script>-->
+
+<button id="cancelWatchBtn">Cancel Watch Device</button>
+<button id="watchBtn">Watch Device</button>
+<button id="promotBtn">Pick Device</button>
+<video id="videoElement" src="movie_5.mp4" />
+<script>
+
+  let v = document.getElementById('videoElement');
+  let promotBtn = document.getElementById('promotBtn');
+  let watchBtn = document.getElementById('watchBtn');
+  let cancelWatchBtn = document.getElementById('cancelWatchBtn');
+
+  promotBtn.onclick = Promot;
+  watchBtn.onclick = Watch;
+  cancelWatchBtn.onclick = CancelWatch;
+
+
+  let ID;
+
+  function availabilityCallback(available) {
+    console.log("available value: ", available);
+  }
+
+  function Onconnecting() {
+    console.log("onconnecting: ", v.remote.state);
+  }
+
+  function Onconnect() {
+    console.log("onconnect: ", v.remote.state);
+  }
+
+  function Ondisconnect() {
+    console.log("ondisconnect: ", v.remote.state);
+  }
+
+  function Watch() {
+    v.remote.watchAvailability(availabilityCallback)
+      .then(id => {
+        ID = id;
+        console.log("state:", v.remote.state);
+        console.log("id: ", ID);
+      })
+  }
+
+  function CancelWatch() {
+    v.remote.cancelWatchAvailability(ID)
+      .then(id => {
+        console.log("cancelled with state: ", v.remote.state);
+        console.log("id: ", id);
+      })
+  }
+
+  function Promot() {
+    v.remote.promot();
+  }
+
+  v.remote.onconnecting = Onconnecting;
+  v.remote.onconnect = Onconnect;
+  v.remote.ondisconnect = Ondisconnect;
+
+</script>
+</html>
