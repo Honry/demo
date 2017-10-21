@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Battery test: IDL</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://www.w3.org/TR/battery-status/">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<script src="../resources/WebIDLParser.js"></script>
+<script src="../resources/idlharness.js"></script>
+<script>
+"use strict";
+
+
+function doTest([dom, battery_idl, battery]) {
+  var idl_array = new IdlArray();
+  idl_array.add_untested_idls(dom);
+  idl_array.add_untested_idls('interface EventHandler {};');
+  idl_array.add_untested_idls('interface Navigator {};');
+  idl_array.add_idls(battery_idl);
+  window.manager = battery;
+  idl_array.add_objects({BatteryManager: ['manager']});
+  idl_array.test();
+}
+
+promise_test(() => {
+  return Promise.all([
+    fetch("dom.idl").then(response => response.text()),
+    fetch("battery-status.idl").then(response => response.text()),
+    navigator.getBattery()
+  ]).then(doTest);
+}, "Test driver");
+
+
+</script>
+
