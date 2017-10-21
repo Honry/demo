@@ -1,22 +1,71 @@
 <!DOCTYPE html>
 <html>
 <title>Tests various ways to call cancelWatchAvailability()</title>
-<!--<script src="/resources/testharness.js"></script>
-<script src="/resources/testharnessreport.js"></script>
-<script src="/common/media.js"></script>-->
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<script src="media.js"></script>
+
+<p>
+  This test vaildates that after connection starts,<br/>
+  the onconnect EventHandler is triggered and connection state is connected.
+</p>
 
 <button id="cancelWatchBtn">Cancel Watch Device</button>
 <button id="watchBtn">Watch Device</button>
+<p>Click the button below to start the test.</p>
 <button id="promptBtn">Pick Device</button>
-<video id="videoElement" src="movie_5.mp4" />
+<video id="videoElement" src="movie_300.mp4" />
 <script>
+  setup({explicit_timeout: true});
 
-  let v = document.getElementById('videoElement');
-  let promptBtn = document.getElementById('promptBtn');
+  const videoElem = document.getElementById('videoElement');
+  const promptBtn = document.getElementById('promptBtn');
+  //const videoElem = document.createElement('video');
+  //videoElem.src = getVideoURI('movie_5');
   let watchBtn = document.getElementById('watchBtn');
   let cancelWatchBtn = document.getElementById('cancelWatchBtn');
 
-  promptBtn.onclick = Prompt;
+  //document.body.appendChild(videoElem);
+  promise_test(t => {
+    const clickWatcher = new EventWatcher(t, promptBtn, 'click');
+
+    //t.add_cleanup()
+    const watchEvent = (obj, watcher, type) => {
+      const watchHandler = new Promise(resolve => {
+        obj['on' + type] = evt => { console.log("resolved watch"); resolve(evt); };
+      });
+      return Promise.all([ watchHandler, watcher.wait_for(type) ]).then(results => {
+        console.log("watching event: ", results);
+        assert_equals(results[0], results[1], 'Both on' + type + 'and addEventListener pass the same event object.');
+        return results[0];
+      });
+    };
+
+    return clickWatcher.wait_for('click').then(() => {
+      promptBtn.disabled = true;
+      //videoElem.disableRemotePlayback = true;
+      return videoElem.remote.prompt();
+    }).then(() => {
+      //Enable timeout again, cause no user action is needed from here.
+/*      t.step_timeout(() => {
+        t.force_timeout();
+        t.done();
+      }, 5000); */
+
+      const eventWatcher = new EventWatcher(t, videoElem.remote, 'connecting');
+      console.log("after prompt");
+      return watchEvent(videoElem.remote, eventWatcher, 'connecting');
+    }).then(evt => {
+      assert_true(evt.isTrusted && !evt.bubbles && !evt.cancelable && evt instanceof Event, 'A simple event is fired.');
+      console.log("event type: ", evt.type);
+      console.log("event target: ", evt.target);
+      console.log("event state: ", evt.state);
+    })
+
+
+  })
+
+/*  deviceBtn.onclick = Prompt;
   watchBtn.onclick = Watch;
   cancelWatchBtn.onclick = CancelWatch;
 
@@ -26,19 +75,19 @@
   function availabilityCallback(available) {
     console.log("available value: ", available);
   }
-
+*/
   function Onconnecting() {
-    console.log("onconnecting: ", v.remote.state);
+    console.log("onconnecting: ", videoElem.remote.state);
   }
 
   function Onconnect() {
-    console.log("onconnect: ", v.remote.state);
+    console.log("onconnect: ", videoElem.remote.state);
   }
 
   function Ondisconnect() {
-    console.log("ondisconnect: ", v.remote.state);
+    console.log("ondisconnect: ", videoElem.remote.state);
   }
-
+/*
   function Watch() {
     v.remote.watchAvailability(availabilityCallback)
       .then(id => {
@@ -59,10 +108,10 @@
   function Prompt() {
     v.remote.prompt();
   }
-
-  v.remote.onconnecting = Onconnecting;
-  v.remote.onconnect = Onconnect;
-  v.remote.ondisconnect = Ondisconnect;
+*/
+  videoElem.remote.onconnecting = Onconnecting;
+  videoElem.remote.onconnect = Onconnect;
+  videoElem.remote.ondisconnect = Ondisconnect;
 
 </script>
 </html>
