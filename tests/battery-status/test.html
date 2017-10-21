@@ -18,7 +18,7 @@ function doTest([dom, battery_idl, battery]) {
   idl_array.add_untested_idls('interface Navigator {};');
   idl_array.add_idls(battery_idl);
   window.manager = battery;
-  idl_array.add_objects({BatteryManager: ['manager']});
+  idl_array.add_objects({Navigator: ['navigator'], BatteryManager: ['manager']});
   idl_array.test();
 }
 
