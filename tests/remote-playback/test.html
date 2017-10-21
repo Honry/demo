@@ -7,16 +7,16 @@
 
 <button id="cancelWatchBtn">Cancel Watch Device</button>
 <button id="watchBtn">Watch Device</button>
-<button id="promotBtn">Pick Device</button>
+<button id="promptBtn">Pick Device</button>
 <video id="videoElement" src="movie_5.mp4" />
 <script>
 
   let v = document.getElementById('videoElement');
-  let promotBtn = document.getElementById('promotBtn');
+  let promptBtn = document.getElementById('promptBtn');
   let watchBtn = document.getElementById('watchBtn');
   let cancelWatchBtn = document.getElementById('cancelWatchBtn');
 
-  promotBtn.onclick = Promot;
+  promptBtn.onclick = Prompt;
   watchBtn.onclick = Watch;
   cancelWatchBtn.onclick = CancelWatch;
 
@@ -56,8 +56,8 @@
       })
   }
 
-  function Promot() {
-    v.remote.promot();
+  function Prompt() {
+    v.remote.prompt();
   }
 
   v.remote.onconnecting = Onconnecting;
