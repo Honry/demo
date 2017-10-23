@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Test that mediastreamtrack are properly ended</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/">
+<link rel="help" href="https://w3c.github.io/mediacapture-depth/">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<meta name="flags" content="interact">
+
+<p class="instructions">Use a test device with depth camera(embedded or external) and an audio device.</p>
+<p class="instructions">When prompted, accept to share your audio and depth streams.</p>
+<h1 class="instructions">Description</h1>
+<p class="instructions">This test checks that the video tracks of
+MediaStream object returned by the success callback in getUserMedia are
+correctly set into inactive state when permission is revoked.</p>
+
+<div id="log"></div>
+
+<script>
+//move to MediaStream-depth-only-manual.https.html
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}})
+  .then(stream => {
+    let vidTrack = stream.getVideoTracks()[0];
+    assert_equals(vidTrack.readyState, "live", "The video track object is in live state");
+    vidTrack.addEventListener("ended", t.unreached_func("ended event should not be fired by MediaStreamTrack.stop()."));
+    let value = vidTrack.stop();
+    assert_equals(value, undefined, "the stop function return a void type value");
+    assert_equals(vidTrack.readyState, "ended", "Video track has been ended as expected");
+    assert_false(stream.active, "MediaStream has been inactive as expected");
+  });
+}, "Tests that the video MediaStreamTrack objects are properly ended when invoke the stop() function");
+
+//move to MediaStream-depth-audio-manual.https.html
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}, audio: true})
+  .then(stream => {
+    let vidTrack = stream.getVideoTracks()[0];
+    assert_equals(vidTrack.readyState, "live", "The video track object is in live state");
+    vidTrack.addEventListener("ended", t.unreached_func("ended event should not be fired by MediaStreamTrack.stop()."));
+    let value = vidTrack.stop();
+    assert_equals(value, undefined, "the stop function return a void type value");
+    assert_equals(vidTrack.readyState, "ended", "Video track has been ended as expected");
+    assert_true(stream.active, "MediaStream is active when other MediaStreamTrack objects depend on it");
+  });
+}, "Tests that the video MediaStreamTrack objects are properly ended when invoke the stop() function and MeidaStream has other active MediaStreamTrack objects");
+
+</script>

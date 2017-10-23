@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>videoKind test</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/">
+<link rel="help" href="https://w3c.github.io/mediacapture-depth/">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<script src="./resources/mediacapture-depth-tests.js"></script>
+<meta name="flags" content="interact">
+
+<p class="instructions">Use a test device with depth camera(embedded or external).</p>
+<p class="instructions">When prompted, accept to share your depth stream.</p>
+<h1 class="instructions">Description</h1>
+<p class="instructions">This test checks features about get MediaStream by videoKind constraint.</p>
+
+<div id="log"></div>
+
+<script>
+
+getStreamsByVideoKind();
+
+</script>

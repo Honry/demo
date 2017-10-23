@@ -1,0 +1,67 @@
+<!--Considering move all available tests to mediacapture-streams folder at first-->
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>MediaStream and MediaStreamTrack clone test</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/">
+<link rel="help" href="https://w3c.github.io/mediacapture-depth/">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<meta name="flags" content="interact">
+
+<p class="instructions">Use a test device with depth camera(embedded or external) and an audio device.</p>
+<p class="instructions">When prompted, accept to share your audio and depth streams.</p>
+<h1 class="instructions">Description</h1>
+<p class="instructions">This test checks that A cloned MediaStream contains clones of all 
+member tracks from the original stream. A cloned MediaStreamTrack has a set of constraints
+that is independent of the instance it is cloned from.</p>
+
+<div id="log"></div>
+
+<script>
+//why you involve audio into this test?
+//what's the different from test: Tests that a MediaStream Depth constructor follows the algorithm set in the spec?
+let attrs = new Array("kind", "label", "readyState", "enabled");
+
+function compareAttr(attributes, track, track_clone) {
+  let attribute;
+  for (let i = 0; i < attributes.length; ++i) {
+    attribute = attributes[i];
+    assert_equals(track[attribute], track_clone[attribute]);
+  }
+}
+
+function checkVideoClone(track, track_clone) {
+  assert_true(track_clone instanceof MediaStreamTrack, "The return type of clone video MediaStreamTrack is MediaStreamTrack");
+  assert_not_equals(track.id, track_clone.id, "Initialize video trackClone's id attribute to a newly generated value");
+  compareAttr(attrs, track, track_clone);
+  assert_equals(track_clone.getSettings()["deviceId"], track.getSettings()["deviceId"], "TrackClone's underlying source is the source of track");
+  assert_equals(track_clone.getConstraints()["advanced"][0]["width"]["min"], 10, "trackClone's constraints are the active constrains of track");
+  assert_equals(track_clone.getConstraints()["videoKind"]["exact"], "depth", "trackClone's constraints are the active constrains of track");
+}
+
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}, advanced: [{width: {min:10}}]}, audio:true})
+  .then(stream => {
+    let audioTrack = stream.getAudioTracks()[0];
+    let videoTrack = stream.getVideoTracks()[0];
+
+    let stream2 = stream.clone();
+    assert_true(stream2 instanceof MediaStream, "The return type of clone MediaStream is MediaStream");
+    assert_not_equals(stream.id, stream2.id, "Initialize streamClone's id attribute to a newly generated value");
+    assert_equals(stream2.getTracks().length, 2, "A cloned MediaStream contains clones of all member tracks from the original stream");
+
+    let audioTrack2 = stream2.getAudioTracks()[0];
+    assert_true(audioTrack2 instanceof MediaStreamTrack, "The return type of clone audio MediaStreamTrack is MediaStreamTrack");
+    assert_not_equals(audioTrack.id, audioTrack2.id, "Initialize audio trackClone's id attribute to a newly generated value");
+    compareAttr(attrs, audioTrack, audioTrack2);
+
+    let videoTrack2 = stream2.getVideoTracks()[0];
+    checkVideoClone(videoTrack, videoTrack2);
+
+    let track_clone = videoTrack.clone();
+    checkVideoClone(videoTrack, track_clone);
+  });
+}, "Tests that a MediaStream and MediaStreamTrack clone() function follows the algorithm set in the spec");
+
+</script>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>videoKind no depth test</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/">
+<link rel="help" href="https://w3c.github.io/mediacapture-depth/">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<script src="./resources/mediacapture-depth-tests.js"></script>
+<meta name="flags" content="interact">
+
+<p class="instructions">Use a test device with depth camera(embedded or external).</p>
+<p class="instructions">When prompted, accept to share your color stream.</p>
+
+<div id="log"></div>
+
+<script>
+
+promise_test(t => {
+  let video_stream;
+  return getStreamOfVideoKind({exact: "color"})
+  .then(stream => {
+    video_stream = stream;
+    assert_equals(video_stream.getVideoTracks().length, 1);
+    let track = video_stream.getVideoTracks()[0];
+    assert_equals(track.getSettings().videoKind, "color");
+    return getStreamOfVideoKind({exact: "depth"})
+    .then(depth_stream => {
+      assert_unreached("Expected to fail, got depth instead");
+    }, (error) => {
+      assert_equals(error.name, "OverconstrainedError");
+      assert_equals(error.constraint, "videoKind");
+      return getStreamOfVideoKind({exact: "fisheye"}).then(fisheye_stream => {
+        assert_unreached("Expected to fail, got fisheye instead");   
+      }, (error) => {
+        assert_equals(error.name, "OverconstrainedError");
+        assert_equals(error.constraint, "videoKind");
+      });
+    })
+  })
+}, "only get color media stream when no depth");
+
+</script>

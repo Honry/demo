@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!-- Copyright © 2016 Chromium authors and World Wide Web Consortium, (Massachusetts Institute of Technology, ERCIM, Keio University, Beihang). -->
+<html>
+    <head>
+        <title>Test that the HTMLMediaElement preload 'none' attribute value is ignored for MediaStream used as srcObject and MediaStream object URLs used as src.</title>>
+        <link rel="author" title="Matthew Wolenetz" href="mailto:wolenetz@chromium.org"/>
+        <script src="../resources/testharness.js"></script>
+        <script src="../resources/testharnessreport.js"></script>
+    </head>
+    <body>
+        <p class="instructions">When prompted, accept to share your audio and video streams.</p>
+        <h1 class="instructions">Description</h1>
+        <p class="instructions">This test checks that the HTMLMediaElement preload 'none' attribute value is ignored for MediaStream used as srcObject and MediaStream object URLs used as src.</p>
+
+        <audio preload="none"></audio>
+        <video preload="none"></video>
+
+        <script>
+        /*function testPreloadNone(t, mediaElement, setSourceStreamFunc)
+        {
+          // The optional deferred load steps (for preload none) for MediaStream resources should be skipped.
+          mediaElement.addEventListener("suspend", t.unreached_func("'suspend' should not be fired."));
+          mediaElement.addEventListener("error", () => {
+            assert_unreached("'error' should not be fired, code=" + mediaElement.error.code);
+          });
+-                // The optional deferred load steps (for preload none) for MediaStream resources should be skipped.
+-                mediaElement.addEventListener("suspend", t.unreached_func("'suspend' should not be fired."));
+-                mediaElement.addEventListener("error", t.step_func(function() {
+-                  assert_unreached("'error' should not be fired, code=" + mediaElement.error.code);
+-                }));
+-
+-                mediaElement.addEventListener("loadeddata", t.step_func(function()
+-                {
+-                    assert_equals(mediaElement.networkState, mediaElement.NETWORK_LOADING);
+-                    t.done();
+-                }));
+-
+-                setSourceStreamFunc();
+          assert_equals(mediaElement.networkState, mediaElement.NETWORK_NO_SOURCE); // Resource selection is active.
+        }*/
+        promise_test(t => {
+          let aud = document.querySelector("audio");
+          return navigator.mediaDevices.getUserMedia({audio: true})
+          .then(stream => new Promise(resolve => {
+            aud.src = URL.createObjectURL(stream);
+            // The optional deferred load steps (for preload none) for MediaStream resources should be skipped.
+            mediaElement.addEventListener("suspend", t.unreached_func("'suspend' should not be fired."));
+            mediaElement.addEventListener("error", t.step_func(function() {
+              assert_unreached("'error' should not be fired, code=" + mediaElement.error.code);
+            }));
+
+            mediaElement.addEventListener("loadeddata", () => {
+              assert_equals(mediaElement.networkState, mediaElement.NETWORK_LOADING);
+              URL.revokeObjectURL(aud.src);
+              resolve();
+            });
+
+            
+            assert_equals(mediaElement.networkState, mediaElement.NETWORK_NO_SOURCE); // Resource selection is active.
+          }))
+          .catch(error => {
+            assert_unreached("getUserMedia error callback was invoked.");
+          });
+        }, "Test that preload 'none' is ignored for MediaStream object URL used as src");
+
+
+        promise_test(t => {
+          let vid = document.querySelector("video");
+          return navigator.mediaDevices.getUserMedia({video: true})
+          .then(stream => new Promise(resolve => {
+            vid.srcObject = stream;
+            // The optional deferred load steps (for preload none) for MediaStream resources should be skipped.
+            mediaElement.addEventListener("suspend", t.unreached_func("'suspend' should not be fired."));
+            mediaElement.addEventListener("error", () => {
+              assert_unreached("'error' should not be fired, code=" + mediaElement.error.code);
+            });
+
+            mediaElement.addEventListener("loadeddata", () => {
+              assert_equals(mediaElement.networkState, mediaElement.NETWORK_LOADING);
+              resolve();
+            });
+
+            
+            assert_equals(mediaElement.networkState, mediaElement.NETWORK_NO_SOURCE); // Resource selection is active.
+          }))
+          .catch(error => {
+            assert_unreached("getUserMedia error callback was invoked.");
+          });
+        }, "Test that preload 'none' is ignored for MediaStream used as srcObject");
+        </script>
+    </body>
+</html>

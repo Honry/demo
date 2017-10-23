@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2017 Intel Corporation.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+* Redistributions of works must retain the original copyright notice, this list
+  of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the original copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+* Neither the name of Intel Corporation nor the names of its contributors
+  may be used to endorse or promote products derived from this work without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY INTEL CORPORATION "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL INTEL CORPORATION BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<meta charset="utf-8">
+<title>Media Capture Depth Reflect Test</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="author" title="Xiuqi Jiang" href="mailto:xiuqix.jiang@intel.com">
+<link rel="help" href="https://www.w3.org/TR/mediacapture-depth/#extensions">
+<meta name="flags" content="interact">
+
+<h2>Preconditions</h2>
+<ol>
+  <li>
+    Use a test device with depth camera(embedded or external).
+  </li>
+  <li>
+    When prompted, accept to share your depth stream.
+  </li>
+</ol>
+
+<div id="log"></div>
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<script src="../resources/vendor-prefix.js" data-prefixed-objects='[{"ancestors":["navigator"], "name":"getUserMedia"}]'></script>
+
+<script>
+
+function checkTypeOrRange(obj, type) {
+  if (obj == 'undefined') return false;
+
+  if ((typeof obj) == type) return true;
+  else if ((typeof obj.max) == type && (typeof obj.min) == type) return true;
+  else return false;
+}
+
+let supported_constraints = [
+  {"videoKind": "boolean"},
+  {"focalLengthX": "boolean"},
+  {"focalLengthY": "boolean"},
+  //TODO {"principalPointX": "boolean"},
+  //TODO {"principalPointY": "boolean"},
+  //TODO {"deprojectionDistortionCoefficients": "boolean"},
+  //TODO {"projectionDistortionCoefficients": "boolean"},
+  {"depthNear": "boolean"},
+  {"depthFar": "boolean"},
+  //TODO {"depthToVideoTransform": "boolean"},
+  {"width": "boolean"},
+  {"height": "boolean"},
+  {"aspectRatio": "boolean"},
+  {"frameRate": "boolean"},
+  {"facingMode": "boolean"},
+  {"deviceId": "boolean"},
+  {"groupId": "boolean"}
+];
+
+test(() => {
+  let supports = navigator.mediaDevices.getSupportedConstraints();
+  for (let i = 0; i < supported_constraints.length; i++) {
+    let constraint;
+    for (constraint in supported_constraints[i]) {
+      assert_equals(typeof supports[constraint], supported_constraints[i][constraint]);
+    }
+  }
+}, "MediaTrackSupportedConstraints dictionary include attributes are correct");
+
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}})
+  .then(stream => {
+    let capabilities = stream.getTracks()[0].getCapabilities();
+    /*TODO assert_equals(typeof capabilities.videoKind, "string");
+    assert_true(checkTypeOrRange(capabilities.focalLengthX, "number"));
+    assert_true(checkTypeOrRange(capabilities.focalLengthY, "number"));
+    assert_true(checkTypeOrRange(capabilities.principalPointX, "number"));
+    assert_true(checkTypeOrRange(capabilities.principalPointY, "number"));
+    assert_true(checkTypeOrRange(capabilities.depthNear, "number"));
+    assert_true(checkTypeOrRange(capabilities.depthFar, "number"));
+    assert_equals(typeof capabilities.deprojectionDistortionCoefficients, "boolean");
+    assert_equals(typeof capabilities.projectionDistortionCoefficients, "boolean");
+    assert_equals(typeof capabilities.depthToVideoTransform, "boolean");*/
+  });
+}, "MediaTrackCapabilities dictionary include attributes are correct");
+
+let advanced_constraints = [
+  {width: {min: 30, ideal: 720, max: 1920, exact: 69}},
+  {height: {min: 30, ideal: 720, max: 1920, exact: 69}},
+  {aspectRatio: 1},
+  {frameRate: 30},
+  {facingMode: "environment"},
+  //TODO {focalLengthX: 680},
+  //TODO {focalLengthY: 680},
+  //TODO {principalPointX: 680},
+  //TODO {principalPointY: 680},
+  //TODO {deprojectionDistortionCoefficients: {k1: 1, k2: 1, p1: 1, p2: 1, k3: 1}},
+  //TODO {projectionDistortionCoefficients: {k1: 1, k2: 1, p1: 1, p2: 1, k3: 1}},
+  //TODO {depthNear: 0.1},
+  //TODO {depthFar: 5},
+  //TODO {depthToVideoTransform: true}
+];
+
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}, advanced: advanced_constraints}})
+  .then(stream => {
+    assert_equals(stream.getTracks()[0].getConstraints()["videoKind"].exact, "depth");
+    let constraints = stream.getTracks()[0].getConstraints()["advanced"];
+    for (let i = 0; i < advanced_constraints.length; i++) {
+      let constraint;
+      for (constraint in advanced_constraints[i]) {
+        if (typeof advanced_constraints[i][constraint] === "object" && advanced_constraints[i][constraint] !== null) {
+          let range;
+          for (range in advanced_constraints[i][constraint]) {
+            assert_equals(constraints[i][constraint][range], advanced_constraints[i][constraint][range]);
+          }
+        } else {
+          assert_equals(constraints[i][constraint], advanced_constraints[i][constraint]);
+        }
+      }
+    }
+  });
+}, "MediaTrackConstraintSet dictionary include attributes are correct");
+
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}, advanced: advanced_constraints}})
+  .then(stream => {
+    let settings = stream.getTracks()[0].getSettings();
+    for (let i = 0; i < advanced_constraints.length; i++) {
+      let constraint;
+      for (constraint in advanced_constraints[i]) {
+        if (typeof advanced_constraints[i][constraint] === "object" && advanced_constraints[i][constraint] !== null) {
+          if (constraint == "width" || constraint == "height") {
+            assert_equals(settings[constraint], advanced_constraints[i][constraint]["exact"]);
+          } else {
+            let range;
+            for (range in advanced_constraints[i][constraint]) {
+              assert_equals(settings[constraint][range], advanced_constraints[i][constraint][range]);
+            }
+          }
+        } else {
+          if (constraint == "depthToVideoTransform") {
+            /*TODO assert_not_equals(settings[constraint], "undefined");
+            assert_equals(settings[constraint]["videoDeviceId"], "string");
+            assert_not_equals(settings[constraint]["transformationMatrix"], "undefined");
+            assert_equals(settings.depthToVideoTransform.transformationMatrix.constructor, "Float32Array");*/
+          //TODO facingMode is not supported.
+          } else if (constraint == "facingMode") {
+            continue;
+          } else {
+            assert_equals(settings[constraint], advanced_constraints[i][constraint]);
+          }
+        }
+      }
+    }
+    /*TODO assert_equals(settings.facingMode, "environment");
+    assert_equals(typeof settings.deviceId, "string");
+    assert_equals(typeof settings.groupId, "string");*/
+    assert_equals(settings.videoKind, "depth");
+  });
+}, "MediaTrackSettings dictionary include attributes are correct");
+
+</script>
