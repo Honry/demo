@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2017 Intel Corporation.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+* Redistributions of works must retain the original copyright notice, this list
+  of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the original copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+* Neither the name of Intel Corporation nor the names of its contributors
+  may be used to endorse or promote products derived from this work without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY INTEL CORPORATION "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL INTEL CORPORATION BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<meta charset="utf-8">
+<title>getUserMedia depth capture test</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="author" title="Xiuqi Jiang" href="mailto:xiuqix.jiang@intel.com">
+<link rel="help" href="https://www.w3.org/TR/mediacapture-depth/">
+<meta name="flags" content="interact">
+
+<h2>Preconditions</h2>
+<ol>
+  <li>
+    Use a test device with depth camera(embedded or external).
+  </li>
+  <li>
+    When prompted, accept to share your depth streams.
+  </li>
+  <li>
+    Choose one depth device and one color device, then click "Run" button.
+  </li>
+  <li>
+    Turn the camera to capture different image.
+  </li>
+</ol>
+
+<h3>Depth Devices</h3>
+<div id="Depth"></div>
+<h3>Color Devices</h3>
+<div id="RGB"></div>
+<br>
+<div><input type="button" value="Run" id="submit"></div>
+
+<div id="log"></div>
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<script src="./resources/mediacapture-depth-tests.js"></script>
+<script src="../resources/vendor-prefix.js" data-prefixed-objects='[{"ancestors":["navigator"], "name":"getUserMedia"}]'></script>
+
+<script>
+
+setup({ explicit_timeout: true });
+
+function addDevices(type) {
+  navigator.mediaDevices.enumerateDevices()
+  .then(devices => {
+    let labels = new Array();
+    let container = document.querySelector("#" + type);
+    let option;
+    for (let i = 0; i < devices.length; ++i) {
+      if (devices[i].label.indexOf(type) != -1 && labels.indexOf(devices[i].label) == -1) {
+        labels.push(devices[i].label);
+        option = document.createElement('input');
+        option.setAttribute("type", "radio");
+        option.setAttribute("name", type);
+        option.setAttribute("value", devices[i].label);
+        if (labels.length == 1) 
+          option.setAttribute("checked", "checked");
+        container.appendChild(option);
+        container.innerHTML += devices[i].label + "<br>";
+      }
+    }
+  });
+}
+
+addDevices("Depth");
+addDevices("RGB");
+document.querySelector("#submit").onclick = () => {
+  let depth_device = document.querySelector("input[name='Depth']:checked").value;
+  let color_device = document.querySelector("input[name='RGB']:checked").value;
+  depthStreamToRGBAUint8Texture(depth_device);
+  depthStreamToRGBAFloatTexture(depth_device);
+  depthStreamToR32FloatTexture(depth_device);
+  getDepthStreamAndCallCreateImageBitmap(depth_device);
+  getDepthStreamAndCameraCalibration(depth_device);
+  getBothStreamsAndCheckForFeaturesPresence(depth_device, color_device);
+}
+
+</script>

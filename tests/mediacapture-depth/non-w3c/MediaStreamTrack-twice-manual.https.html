@@ -1,0 +1,51 @@
+<!--move to MediaStream-depth-only-manual.https.html-->
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Invoke getUserMedia twice use the same media source</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/">
+<link rel="help" href="https://w3c.github.io/mediacapture-depth/">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<meta name="flags" content="interact">
+
+<p class="instructions">Use a test device with depth camera(embedded or external).</p>
+<p class="instructions">When prompted, accept to share your depth stream.</p>
+
+<div id="log"></div>
+
+<script>
+
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}})
+  .then(first => {
+    let settings1 = first.getTracks()[0].getSettings();
+    let videoConstraints = {deviceId: settings1.deviceId, width: {exact: settings1.width / 2}};
+    return navigator.mediaDevices.getUserMedia({video: videoConstraints})
+    .then(second => {
+      let settings2 = second.getTracks()[0].getSettings();
+      assert_equals(settings1.deviceId, settings2.deviceId);
+      assert_equals(settings1.width / 2, settings2.width);
+    });
+  });
+}, "Tests that several MediaStreamTrack objects can represent the same media source with different resolutions");
+
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}})
+  .then(first => {
+    let track1 = first.getTracks()[0];
+    let settings1 = track1.getSettings();
+    let capabilities1 = track1.getCapabilities();
+    let videoConstraints = {deviceId: settings1.deviceId};
+    return navigator.mediaDevices.getUserMedia({video: videoConstraints})
+    .then(second => {
+      let track2 = second.getTracks()[0];
+      let settings2 = track2.getSettings();
+      let capabilities2 = track2.getCapabilities();
+      assert_object_equals(capabilities1, capabilities2);
+      assert_object_equals(settings1, settings2);
+    });
+  });
+}, "Tests that if two different track objects bound to the same source ask for the same capability or setting information, they will get back the same answer");
+
+</script>

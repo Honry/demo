@@ -1,0 +1,58 @@
+<!--move to MediaStream-depth-only-manual.https.html-->
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Test MediaStreamTrack applyConstriants</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/">
+<link rel="help" href="https://w3c.github.io/mediacapture-depth/">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<meta name="flags" content="interact">
+
+<p class="instructions">Use a test device with depth camera(embedded or external).</p>
+<p class="instructions">When prompted, accept to share your depth stream.</p>
+
+<div id="log"></div>
+
+<script>
+
+promise_test(t => {
+  let track, width;
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}, advanced: [
+         {width: {min: 10}}]}})
+  .then(stream => {
+    track = stream.getTracks()[0];
+    width = track.getSettings().width;
+    if (width > 11) {
+      width = 11;
+      return track.applyConstraints({advanced: [{width: {exact: width}}]});
+    } else {
+      width = width + 1;
+      return track.applyConstraints({advanced: [{width: {exact: width}}]});
+    }
+  })
+  .then(() => {
+    assert(track.getSettings().width, width);
+  })
+}, "Tests that set width constraint by applyConstraints() is successful");
+
+promise_test(t => {
+  let track, width;
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}, advanced: [
+         {width: {min: 10}}]}})
+  .then(stream => {
+    track = stream.getTracks()[0];
+    width = track.getSettings().width;
+    return track.applyConstraints({advanced: [{width: {max: 0}}]});
+  })
+  .then(() => {
+    assert_unreached("apply constraints can't resolve when is a conflicting one");
+  })
+  .catch(error => {
+    assert_greater_than_equal(width, 10);
+    assert_equals(error.name, "OverconstrainedError", "An impossible constraint triggers a OverconstrainedError");
+    assert_equals(error.constraint, "width", "The name of the not satisfied error is given in error.constraint");
+  })
+}, "Tests that the promise returned from applyConstraints() will be rejected when set a conflicting constraint and without applying any of the new constraints");
+
+</script>

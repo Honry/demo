@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Test that mediastreamtrack are properly ended</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/">
+<script src="../../resources/testharness.js"></script>
+<script src="../../resources/testharnessreport.js"></script>
+<meta name="flags" content="interact">
+
+<p class="instructions">Use a test device with color camera(embedded or external) and audio device.</p>
+<p class="instructions">When prompted, accept to share your color and audio streams, and then revoke them permissions.</p>
+
+<div id="log"></div>
+
+<script>
+// longer timeout since requires user interaction
+setup({ explicit_timeout: true });
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({audio: true,video: true})
+  .then(stream => new Promise(resolve => {
+    let vidTrack = stream.getVideoTracks()[0];
+    let audTrack = stream.getAudioTracks()[0];
+    vidTrack.onended = () => {
+      resolve(stream);
+    };
+    assert_equals(vidTrack.readyState, "live", "The video track object is in live state");
+    assert_equals(audTrack.readyState, "live", "The audio track object is in live state");
+  }))
+  .then(stream => {
+    assert_equals(stream.getVideoTracks()[0].readyState, "ended", "Video track has been ended as expected");
+    assert_equals(stream.getAudioTracks()[0].readyState, "ended", "Audio track has been ended as expected");
+    assert_false(stream.active, "MediaStream has been inactive as expected");
+  });
+}, "Tests that the video MediaStreamTrack objects are properly ended on permission revocation", {timeout: 20000});
+
+</script>

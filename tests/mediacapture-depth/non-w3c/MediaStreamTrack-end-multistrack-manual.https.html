@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Test that mediastreamtrack not alone are properly ended</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/">
+<link rel="help" href="https://w3c.github.io/mediacapture-depth/">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<meta name="flags" content="interact">
+
+<p class="instructions">Use a test device with depth camera(embedded or external) and an audio device.</p>
+<p class="instructions">When prompted, accept to share your audio and depth streams, 
+and then revoke that depth stream permission.</p>
+<h1 class="instructions">Description</h1>
+<p class="instructions">This test checks that the video MediaStreamTrack objects are 
+properly ended on permission revocation when MeidaStream has other active MediaStreamTrack objects.</p>
+
+<div id="log"></div>
+
+<script>
+//why we have to use revoke permission to triage onended event? I think stop() method can satisfy this scenario.
+async_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}, audio: true})
+  .then(stream => {
+    let vidTrack = stream.getVideoTracks()[0];
+    let audTrack = stream.getAudioTracks()[0];
+    vidTrack.onended = t.step_timeout(() => {
+      assert_equals(audTrack.readyState, "live", "The audio track object is still in live state");
+      assert_true(stream.active, "MediaStream is active when other MediaStreamTrack objects depend on it");
+      assert_equals(vidTrack.readyState, "ended", "Video track has been ended as expected");
+      t.done();
+    }, 5000);
+    assert_equals(vidTrack.readyState, "live", "The video track object is in live state");
+  });// longer timeout since requires user interaction
+}, "Tests that the video MediaStreamTrack objects are properly ended on permission revocation when MeidaStream has other active MediaStreamTrack objects", {timeout: 20000});
+
+</script>

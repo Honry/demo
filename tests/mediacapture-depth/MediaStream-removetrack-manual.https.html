@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Removing a track from a MediaStream</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/#dom-mediastream-removetrack">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<meta name="flags" content="interact">
+
+<h2>Description</h2>
+<p>
+  This test checks that removinging a track from a MediaStream works as expected.
+</p>
+
+<h2>Preconditions</h2>
+<ol>
+  <li>
+    Use a test device with depth camera(embedded or external).
+  </li>
+  <li>
+    When prompted, accept to share your depth stream.
+  </li>
+</ol>
+
+<div id="log"></div>
+
+<script>
+
+async_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}})
+  .then(stream => {
+    stream.onremovetrack = () => {
+      assert_unreached("onremovetrack is not triggered when removal of track is triggered by the script itself");
+    };
+    assert_equals(stream.getVideoTracks().length, 1, "video mediastream starts with one video track");
+    let video_clone = stream.getVideoTracks()[0].clone();
+    let value = stream.removeTrack(stream.getVideoTracks()[0]);
+    assert_equals(value, undefined, "the removeTrack function return a void type value");
+    assert_equals(stream.getVideoTracks().length, 0, "video mediastream has no video track left");
+    // If track is not in stream's track set, then abort these steps, should not throw
+    stream.removeTrack(video_clone);
+    //Use a timeout to detect a misfire of the remove track event
+    t.step_timeout(t.step_func_done());
+  });
+}, "Tests that a removal from a MediaStream works as expected", {timeout: 20000});
+
+</script>

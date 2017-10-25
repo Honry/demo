@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Optional constraint recognized as optional in getUserMedia</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/#idl-def-mediatracksettings">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<meta name="flags" content="interact">
+
+<h2>Preconditions</h2>
+<ol>
+  <li>
+    Use a test device with depth camera(embedded or external).
+  </li>
+  <li>
+    When prompted, accept to share your depth stream.
+  </li>
+</ol>
+
+<div id="log"></div>
+
+<script>
+
+promise_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}, advanced: [{width: {min: 1024, max: 800}}]}})
+  .then(stream => {
+    assert_equals(stream.getVideoTracks().length, 1, "the media stream has exactly one video track");
+  })
+  .catch(error => {
+    assert_unreached("an optional constraint can't stop us from obtaining a depth stream");
+  });
+}, "Tests that setting an optional constraint in getUserMedia is handled as optional");
+
+</script>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Adding a track to a MediaStream</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/#dom-mediastream-addtrack">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<meta name="flags" content="interact">
+
+<h2>Preconditions</h2>
+<ol>
+  <li>
+    Use a test device with depth camera(embedded or external).
+  </li>
+  <li>
+    When prompted, accept to share your depth stream.
+  </li>
+</ol>
+
+<div id="log"></div>
+
+<script>
+
+async_test(t => {
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}})
+  .then(stream => {
+    let video = new MediaStream();
+    video.onaddtrack = () => {
+      assert_unreached("onaddtrack is not fired when the script directly modified the track of a mediastream");
+    };
+    assert_equals(stream.getVideoTracks().length, 1, "video mediastream starts with one video track");
+    assert_equals(video.getVideoTracks().length, 0, "new video mediastream starts with zero video track");
+    let value = video.addTrack(stream.getVideoTracks()[0]);
+    assert_equals(value, undefined, "the addTrack function return a void type value");
+    assert_equals(video.getVideoTracks().length, 1, "new video mediastream has now one video track");
+    //If track is already in stream's track set, then abort these steps, should not throw
+    video.addTrack(stream.getVideoTracks()[0]);
+    assert_equals(video.getVideoTracks().length, 1, "new video mediastream still has one video track");
+    //Use a timeout to detect a misfire of the add track event
+    t.step_timeout(t.step_func_done());
+  });
+}, "Tests that adding a track to a MediaStream works as expected");
+
+</script>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Test MediaStreamTrack attributes</title>
+<link rel="author" title="Intel" href="http://www.intel.com">
+<link rel="help" href="https://w3c.github.io/mediacapture-main/">
+<link rel="help" href="https://w3c.github.io/mediacapture-depth/">
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
+<meta name="flags" content="interact">
+
+<p class="instructions">Use a test device with depth camera(embedded or external) and an audio device.</p>
+<p class="instructions">When prompted, accept to share your audio and depth streams.</p>
+
+<div id="log"></div>
+
+<script>
+//any spec statement for this checkpoint?
+promise_test(t => {
+  let video;
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}})
+  .then(stream => {
+    video = stream;
+    return navigator.mediaDevices.getUserMedia({audio: true})
+    .then(audio => {
+      video.addTrack(audio.getAudioTracks()[0]);
+      assert_not_equals(video.getVideoTracks()[0].id, video.getAudioTracks()[0].id, "audio and video tracks have distinct ids");
+    });
+  });
+}, "Tests that distinct mediastream tracks have distinct ids");
+
+//move to MediaStream-depth-only-manual.https.html
+promise_test(t => {
+  let id, label, kind;
+  return navigator.mediaDevices.getUserMedia({video: {videoKind: {exact: "depth"}}})
+  .then(stream => {
+    track = stream.getTracks()[0];
+    id = track.getSettings().deviceId;
+    label = track.label;
+    kind = track.kind;
+    return navigator.mediaDevices.enumerateDevices();
+  })
+  .then(devices => {
+    let device_label, device_kind;
+    for (let i = 0; i < devices.length; ++i) {
+      if (devices[i].deviceId == id) {
+        device_label = devices[i].label;
+        device_kind = devices[i].kind;
+        break;
+      }
+    }
+    assert_equals(device_label, label);
+    assert_equals(kind, "video");
+    assert_equals(device_kind, "videoinput");
+  });
+}, "Tests that the label and kind attributes must return the values of the object's corresonding source");
+
+</script>
