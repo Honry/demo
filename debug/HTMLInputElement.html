@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Custom Elements: CEReactions on HTMLInputElement interface</title>
+<meta name="author" title="Intel" href="http://www.intel.com">
+<meta name="assert" content="capture of HTMLInputElement interface must have CEReactions">
+<meta name="help" content="https://www.w3.org/TR/html-media-capture/#the-capture-attribute">
+<script src="../../resources/testharness.js"></script>
+<script src="../../resources/testharnessreport.js"></script>
+<script src="../resources/custom-elements-helpers.js"></script>
+<script src="./resources/reactions.js"></script>
+<body>
+<script>
+/*
+function testReflectAttributeWithContentValues(jsAttributeName, contentAttributeName, validValue1, contentValue1, validValue2, contentValue2, name) {
+    test(function () {
+        var element = define_new_custom_element([contentAttributeName]);
+        var instance = document.createElement(element.name);
+        assert_array_equals(element.takeLog().types(), ['constructed']);
+        instance[jsAttributeName] = validValue1;
+        var logEntries = element.takeLog();
+        assert_array_equals(logEntries.types(), ['attributeChanged']);
+
+        assert_attribute_log_entry(logEntries.last(), {name: contentAttributeName, oldValue: null, newValue: contentValue1, namespace: null});
+    }, name + ' must enqueue an attributeChanged reaction when adding ' + contentAttributeName + ' content attribute');
+
+    test(function () {
+        var element = define_new_custom_element([contentAttributeName]);
+        var instance = document.createElement(element.name);
+        instance[jsAttributeName] = validValue1;
+        assert_array_equals(element.takeLog().types(), ['constructed', 'attributeChanged']);
+        instance[jsAttributeName] = validValue2;
+        var logEntries = element.takeLog();
+        assert_array_equals(logEntries.types(), ['attributeChanged']);
+        assert_attribute_log_entry(logEntries.last(), {name: contentAttributeName, oldValue: contentValue1, newValue: contentValue2, namespace: null});
+    }, name + ' must enqueue an attributeChanged reaction when replacing an existing attribute');
+}
+*/
+function define_build_in_custom_element(observedAttributes, extendedElement, extendsOption) {
+    let log = [];
+    let name = 'custom-element-' + define_build_in_custom_element._element_number++;
+
+    class CustomElement extends HTMLInputElement {
+        constructor() {
+            super();
+            log.push({type: 'constructed', element: this});
+        }
+        attributeChangedCallback(...args) {
+            log.push(create_attribute_changed_callback_log(this, ...args));
+        }
+        connectedCallback() { log.push({type: 'connected', element: this}); }
+        disconnectedCallback() { log.push({type: 'disconnected', element: this}); }
+        adoptedCallback(oldDocument, newDocument) { log.push({type: 'adopted', element: this, oldDocument: oldDocument, newDocument: newDocument}); }
+    }
+    CustomElement.observedAttributes = observedAttributes;
+    customElements.define(name, CustomElement, { extends: extendsOption});
+
+    return {
+        name: name,
+        class: CustomElement,
+        takeLog: function () {
+            let currentLog = log; log = [];
+            currentLog.types = () => currentLog.map((entry) => entry.type);
+            currentLog.last = () => currentLog[currentLog.length - 1];
+            return currentLog;
+        }
+    };
+}
+define_build_in_custom_element._element_number = 1;
+
+test(() => {
+    const element = define_build_in_custom_element(['capture'], "HTMLInputElement", 'input');
+    const instance = document.createElement('input', { is: element.name });
+
+    assert_array_equals(element.takeLog().types(), ['constructed']);
+    instance['capture'] = 'user';
+    const logEntries = element.takeLog();
+    assert_array_equals(logEntries.types(), ['attributeChanged']);
+    assert_attribute_log_entry(logEntries.last(), {name: 'capture', oldValue: '', newValue: 'user', namespace: null});
+}, 'capture on HTMLInputElement must enqueue an attributeChanged reaction when adding new attribute');
+
+
+test(() => {
+    const element = define_build_in_custom_element(['capture'], "HTMLInputElement", 'input');
+    const instance = document.createElement('input', { is: element.name });
+
+    instance['capture'] = 'user';
+    assert_array_equals(element.takeLog().types(), ['constructed', 'attributeChanged']);
+    instance['capture'] = 'environment';
+    const logEntries = element.takeLog();
+    assert_array_equals(logEntries.types(), ['attributeChanged']);
+    assert_attribute_log_entry(logEntries.last(), {name: 'capture', oldValue: 'user', newValue: 'environment', namespace: null});
+}, 'capture on HTMLInputElement must must enqueue an attributeChanged reaction when replacing an existing attribute');
+</script>
+</body>

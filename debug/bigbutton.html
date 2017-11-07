@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Custom Elements: CEReactions on HTMLInputElement interface</title>
+<meta name="author" title="Intel" href="http://www.intel.com">
+<meta name="assert" content="capture of HTMLInputElement interface must have CEReactions">
+<meta name="help" content="https://www.w3.org/TR/html-media-capture/#the-capture-attribute">
+<body>
+<script>
+/*class BigButtonElement extends HTMLButtonElement {
+  constructor() {
+    console.debug('constructor 1');
+    super();
+    console.debug('c 2');
+    var shadow = this.attachShadow({mode: 'open'});
+  }
+
+  connectedCallback() {
+    console.debug('connected');
+  }
+}
+
+
+customElements.define('big-button', BigButtonElement, {extends: 'button'});
+*/
+
+class PlasticButton extends HTMLButtonElement {
+  constructor() {
+    super();
+
+    this.addEventListener("click", () => {
+      console.log('works');// Draw some fancy animation effects!
+    });
+  }
+}
+
+customElements.define("plastic-button", PlasticButton, { extends: "button" });
+const plasticButton2 = new PlasticButton();
+alert(plasticButton2.localName);
+alert(plasticButton2.getAttribute("is"));
+</script>
+<button is="plastic-button">Click Me!</button>
+<button is='plastic-button'>Huge button!</button>
+</body>
