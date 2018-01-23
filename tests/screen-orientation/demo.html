@@ -1,4 +1,62 @@
+<script src="../resources/testharness.js"></script>
+<script src="../resources/testharnessreport.js"></script>
 <script>
+
+var previousOrientation = screen.orientation;
+async_test(function(t) {
+    //start fullscreen
+    setTimeout( ()=> {
+    console.log("time's up")
+    var orientations = ['any', 'portrait', 'landscape', 'portrait-secondary',
+                        'landscape-primary', 'landscape-secondary', 'portrait-primary'];
+
+    setOrientation = function(idx) {
+        console.log('idx: ', idx)
+        if( idx == orientations.length) {
+            screen.orientation.unlock();
+            t.done();
+            return;
+        }
+        (function(i) {
+            console.log("lock type: ", orientations[i]);
+            screen.orientation.lock('portrait-secondary').then(function() {
+                console.log("lock success")
+                setOrientation(i+1);
+            },function(e) {console.log("error:", e.name)});
+        })(idx);
+    };
+
+    setOrientation(0);
+   }, 5000);
+}, "Test that screen.orientation.lock returns a pending promise.");
+
+
+async_test(t => {
+  setTimeout( ()=> {
+  screen.orientation.lock('any').catch(e => { console.log("AbortError: ", e.name); t.done(); });
+  screen.orientation.lock('any');
+
+  }, 5000);
+  
+}, "Test that screen.orientation.lock() throws AbortError if there's a pending promise");
+
+
+	function toggleFullScreen() {
+	  var doc = window.document;
+	  var docEl = doc.documentElement;
+
+	  var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+	  var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+	  if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+		requestFullScreen.call(docEl);
+	  }
+	  else {
+		cancelFullScreen.call(doc);
+	  }
+	}
+
+
   var show = function() {
      console.log("Orientation type is " + screen.orientation.type);
      console.log("Orientation angle is " + screen.orientation.angle);
@@ -11,9 +69,23 @@
 <button onclick='screen.orientation.unlock()'>
   Unlock
 </button>
-<button onclick="screen.orientation.lock('portrait')">
-  Lock to portrait
+<br />
+<button onclick="screen.orientation.lock('portrait-primary')">
+  Lock to portrait-primary
 </button>
-<button onclick="screen.orientation.lock('landscape')">
-  Lock to landscape
+<br />
+<button onclick="screen.orientation.lock('portrait-secondary')">
+  Lock to portrait-secondary
+</button>
+<br />
+<button onclick="screen.orientation.lock('landscape-primary')">
+  Lock to landscape-primary
+</button>
+<br />
+<button onclick="screen.orientation.lock('landscape-secondary')">
+  Lock to landscape-secondary
+</button>
+<br />
+<button onclick="toggleFullScreen()">
+  Toggle FullScreen
 </button>
