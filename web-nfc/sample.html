@@ -86,7 +86,7 @@
       <option>opaque</option>
       <option>empty</option>
     <select><br>
-    <textarea cols="30" rows="3" id="pushMessage" style="margin-bottom: 20px"></textarea><br><br>
+    <textarea cols="30" rows="5" id="pushMessage" style="margin-bottom: 20px"></textarea><br><br>
     <button id="writeButton">
       Write tag
     </button>
@@ -100,7 +100,7 @@
       if ('NFCReader' in window) {
         import("./script.js");
       } else {
-        pre.textContent = 'No WebNFC support!\n';
+        pre.innerHTML = '<b>No WebNFC support!</b>\n';
       }
       document.addEventListener('focus', event => { console.log('focus doc') });
     </script>
