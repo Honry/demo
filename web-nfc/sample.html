@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <h1>
+       WebNFC
+    </h1>
+    <h3>
+       NFCPushOptions
+    </h3>
+    <div>
+      <table cellpadding="0" cellspacing="0">
+        <tr>
+          <td width="114">target: </td>
+          <td>
+            <select id="target">
+              <option>any</option>
+              <option>tag</option>
+              <option>peer</option>
+            <select>
+          </td>
+        </tr>
+        <tr>
+          <td>timeout: </td>
+          <td><input id="timeout" type="text" value="Infinity"/></td>
+        </tr>
+        <tr>
+          <td>ignoreRead: </td>
+          <td>
+            <select id="ignoreRead">
+              <option>true</option>
+              <option>false</option>
+            <select>
+          </td>
+        </tr>
+        <tr>
+          <td colspan=2><button id="abortPushButton">Abort push</button></td>
+        </tr>
+      </table>
+    </div>
+    <h3>
+       NFCScanOptions
+    </h3>
+    <div>
+      <table cellpadding="0" cellspacing="0">
+        <tr>
+          <td>id: </td>
+          <td><input id="scanId" type="text" value=""/></td>
+        </tr>
+        <tr>
+          <td>recordType: </td>
+          <td>
+            <select id="recordType">
+              <option>---</option>
+              <option>text</option>
+              <option>url</option>
+              <option>json</option>
+              <option>opaque</option>
+              <option>empty</option>
+            <select>
+          </td>
+        </tr>
+        <tr>
+          <td>mediaType: </td>
+          <td><input id="mediaType" type="text" value=""/></td>
+        </tr>
+        <tr>
+          <td colspan=2><font color="gray">Eg: text/plain; application/octet-stream; application/json</font></td>
+        </tr>
+        <tr>
+          <td><button id="abortButton">Abort scan</button></td>
+          <td><button id="scanButton">Scan</button></td>
+        </tr>
+      </table>
+    </div>
+    <br>
+    <h3>
+       Push Message
+    </h3>
+    Push recordType: <select id="pushRecordType">
+      <option>text</option>
+      <option>url</option>
+      <option>json</option>
+      <option>opaque</option>
+      <option>empty</option>
+    <select><br>
+    <textarea cols="30" rows="3" id="pushMessage" style="margin-bottom: 20px"></textarea><br><br>
+    <button id="writeButton">
+      Write tag
+    </button>
+    <label>
+      <input id="readingInput" type="checkbox" checked style="vertical-align: bottom"/>
+      reading
+    </label>
+    <iframe src="iframe.html" style="display:block; height: 64px; margin-top: 12px"></iframe>
+    <pre id="pre" style="overflow: auto; padding: 0 12px 12px 0"></pre>
+    <script>
+      if ('NFCReader' in window) {
+        import("./script.js");
+      } else {
+        pre.textContent = 'No WebNFC support!\n';
+      }
+      document.addEventListener('focus', event => { console.log('focus doc') });
+    </script>
+  </body>
+</html>
+
