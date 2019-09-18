@@ -70,8 +70,7 @@
           <td colspan=2><font color="gray">Eg: text/plain; application/octet-stream; application/json</font></td>
         </tr>
         <tr>
-          <td><button id="abortButton">Abort scan</button></td>
-          <td><button id="scanButton">Scan</button></td>
+          <td colspan=2><button id="abortButton">Abort scan</button></td>
         </tr>
       </table>
     </div>
@@ -79,21 +78,27 @@
     <h3>
        Push Message
     </h3>
-    Push recordType: <select id="pushRecordType">
+    NDEFMessageSource: <select id="NDEFMessageSource">
+      <option>DOMString</option>
+      <option>ArrayBuffer</option>
+      <option>NDEFMessageInit</option>
+    <select><br>
+    <div id="NDEFMessageInit">
+    NDEFMessageInit recordType: <select id="pushRecordType">
       <option>text</option>
       <option>url</option>
       <option>json</option>
       <option>opaque</option>
       <option>empty</option>
     <select><br>
+    </div>
     <textarea cols="30" rows="5" id="pushMessage" style="margin-bottom: 20px"></textarea><br><br>
     <button id="writeButton">
-      Write tag
+      Start to write tag
     </button>
-    <label>
-      <input id="readingInput" type="checkbox" checked style="vertical-align: bottom"/>
-      reading
-    </label>
+    <button id="scanButton">
+      Start to read tag
+    </button>
     <iframe src="iframe.html" style="display:block; height: 64px; margin-top: 12px"></iframe>
     <pre id="pre" style="overflow: auto; padding: 0 12px 12px 0"></pre>
     <script>
