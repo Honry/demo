@@ -1,0 +1,75 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #3c72d6;
+  background: linear-gradient(to right, #f8d9b1, #ffd857);
+  font-family: "Quicksand", sans-serif;
+  color: #262626;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 10px 10px 100px 10px;
+}
+
+.container h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 500;
+}
+
+.container h2 {
+  font-weight: 500;
+}
+
+.img-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.img-container img {
+  cursor: pointer;
+  border-radius: 6px;
+  margin-top: 50px;
+  width: 100px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1) !important;
+}
+
+.popupContainer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  top: 0;
+  overflow: auto;
+}
+
+.popupContainer .popUpBackground {
+  transition: all 0.3s ease-in-out;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  top: 0;
+}
+
+.popupContainer .popUpBackground.active {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.popupContainer .popImage {
+  position: relative;
+  display: block;
+  transition: all 0.3s ease-in-out;
+  border-radius: 6px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+}
