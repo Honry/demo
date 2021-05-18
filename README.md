@@ -102,3 +102,7 @@ Build an installable web application for Windows platforms following these steps
 6. Install the application on windows:
 
    Double click the msi file to install.
+   
+   ```js
+   setTimeout(..., 0)
+   ```
