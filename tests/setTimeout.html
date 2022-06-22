@@ -1,11 +1,6 @@
 <html>
   <head>
     <title></title>
-    <script>
-    const div = document.getElementById('log');
-    setTimeout(() => {div.innerHTML = '1ms timeout occurs' }, 1);
-    setTimeout(() => {div.innerHTML = '0ms timeout occurs' }, 0);
-    </script>
   </head>
   <body bgcolor="green">
     <h1>SetTimeout 0 without 1ms Clamp Test</h1>
@@ -13,4 +8,9 @@
       <div id="log"></div>
     </div>
   </body>
+  <script>
+    const div = document.getElementById('log');
+    setTimeout(() => {div.innerHTML += '<br> 1ms timeout occurs'; }, 1);
+    setTimeout(() => {div.innerHTML += '<br> 0ms timeout occurs'; }, 0);
+  </script>
 </html>
